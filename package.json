@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "cd test && node ../node_modules/webpack/bin/webpack.js",
-    "test:debug": "cd test && node --inspect-brk ../node_modules/webpack/bin/webpack.js"
+    "test:debug": "cd test && node --inspect-brk ../node_modules/webpack/bin/webpack.js",
+    "test-plugin":"cd test-plugin && node ../node_modules/webpack/bin/webpack.js",
+    "test-plugin:debug": "cd test-plugin && node --inspect-brk ../node_modules/webpack/bin/webpack.js"
   },
   "author": "CatalystDP",
   "license": "MIT",
@@ -16,11 +18,10 @@
     "webpack": "3"
   },
   "dependencies": {
-    "file-loader": "^1.1.11",
-    "webpack": "3",
-    "wxapp-webpack-plugin": "^0.17.2"
+    "webpack": "3"
   },
   "devDependencies": {
+    "file-loader": "^1.1.11",
     "acorn": "^5.5.3",
     "co": "^4.6.0",
     "fs-extra": "^6.0.1",

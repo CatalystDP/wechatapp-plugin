@@ -2,6 +2,14 @@ const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
 class WechatAppPlugin {
+    /**
+     * @constructor 
+     * @param {Object} option 
+     *    @param {String}[option.devMode=WechatAppPlugin.mode.APP] 开发模式
+     *    @param {String} [option.ext='.js']
+     *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
+     *        
+     */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {
             devMode: WechatAppPlugin.mode.APP,
@@ -12,6 +20,7 @@ class WechatAppPlugin {
         });
         let defaultOpt = {
             componentsPath:['components'],
+            fileLoaderExt:['png'],
         };
         _.forIn(defaultOpt,(value,key)=>{
             let val;
@@ -21,16 +30,16 @@ class WechatAppPlugin {
             }
             this.option[key] = val;
         });
-        this.option
-        this._route = {
-            [WechatAppPlugin.mode.APP]: (compiler) => {
-                let Module = require('./lib/AppDevModule');
-                new Module(compiler, this.option);
-            },
-            [WechatAppPlugin.mode.PLUGIN]: (compiler, ) => {
-
+        this._route = {};
+        _.forIn(moduleRoute,(value,key)=>{
+            this._route[key] = (compiler)=>{
+                this.createDevModule(compiler,value);
             }
-        };
+        });
+    }
+    createDevModule(compiler,name){
+        let Module = require(path.join(__dirname,'lib',name));
+        new Module(compiler,this.option);
     }
     apply(compiler) {
         compiler.plugin('environment', () => {
@@ -43,5 +52,9 @@ class WechatAppPlugin {
 WechatAppPlugin.mode = {
     APP: 'app',
     PLUGIN: 'plugin'
+};
+const moduleRoute = {
+    [WechatAppPlugin.mode.APP]:'AppDevModule',
+    [WechatAppPlugin.mode.PLUGIN]:'PluginDevModule'
 };
 module.exports = WechatAppPlugin;

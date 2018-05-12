@@ -1,0 +1,5 @@
+{
+    "usingComponents":{
+        "test-component": "../../components/test-component/test-component"
+    }
+}
