@@ -1,0 +1,31 @@
+{
+  "name": "wechatapp-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "cd test && node ../node_modules/webpack/bin/webpack.js",
+    "test:debug": "cd test && node --inspect-brk ../node_modules/webpack/bin/webpack.js"
+  },
+  "author": "CatalystDP",
+  "license": "MIT",
+  "peerDependencies": {
+    "webpack": "3"
+  },
+  "dependencies": {
+    "file-loader": "^1.1.11",
+    "webpack": "3",
+    "wxapp-webpack-plugin": "^0.17.2"
+  },
+  "devDependencies": {
+    "acorn": "^5.5.3",
+    "co": "^4.6.0",
+    "fs-extra": "^6.0.1",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.10",
+    "webpack-sources": "^1.1.0"
+  }
+}
