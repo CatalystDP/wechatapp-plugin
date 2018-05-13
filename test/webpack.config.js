@@ -16,8 +16,7 @@ module.exports = {
 		}
 	},
 	plugins: [
-		new WechatappPlugin({
-		})
+		new WechatappPlugin()
 	],
 	devtool: 'source-map',
 };
