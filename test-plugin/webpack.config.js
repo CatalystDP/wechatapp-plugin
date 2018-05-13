@@ -43,27 +43,3 @@ module.exports = [
 		]
 	})
 ];
-// module.exports = {
-// 	entry: {
-// 		app: path.join(__dirname, 'src/app.js')
-// 	},
-// 	resolve: {
-// 		alias: {
-// 			util: path.join(__dirname, 'utils')
-// 		}
-// 	},
-// 	plugins: [
-// 		new WechatappPlugin({
-// 			devMode: WechatappPlugin.mode.PLUGIN
-// 			// componentsPath:['aaa']
-// 		})
-// 		// new wxAppPlugin({
-// 		// 	// extensions: [`.${ext}`, '.js'],
-// 		// }),
-// 	],
-// 	devtool: 'source-map',
-// 	// resolve: {
-// 	// 	modules: [`src/${ext}`, 'node_modules'],
-// 	// 	extensions: ['.js', '.ts', '.json'],
-// 	// },
-// };

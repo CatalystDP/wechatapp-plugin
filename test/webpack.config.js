@@ -17,15 +17,7 @@ module.exports = {
 	},
 	plugins: [
 		new WechatappPlugin({
-			// componentsPath:['aaa']
 		})
-		// new wxAppPlugin({
-		// 	// extensions: [`.${ext}`, '.js'],
-		// }),
 	],
 	devtool: 'source-map',
-	// resolve: {
-	// 	modules: [`src/${ext}`, 'node_modules'],
-	// 	extensions: ['.js', '.ts', '.json'],
-	// },
 };
