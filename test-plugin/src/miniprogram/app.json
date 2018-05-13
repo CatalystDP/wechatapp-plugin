@@ -1,11 +1,11 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+  "plugins": {
+    "myPlugin": {
+      "version": "dev",
+      "provider": "wxa7a32c99df7b53f3"
+    }
   }
 }

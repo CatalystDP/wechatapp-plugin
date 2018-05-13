@@ -10,7 +10,7 @@
 		"minified": true,
 		"newFeature": true
 	},
-	"miniprogramRoot":"./miniprogram",
+	"miniprogramRoot": "./miniprogram",
 	"pluginRoot": "./plugin",
 	"compileType": "plugin",
 	"libVersion": "1.9.7",

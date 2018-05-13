@@ -16,7 +16,8 @@ class WechatAppPlugin {
             ext:'.js',
             appCommonName: 'appCommon',
             jsonpFuncName: 'wechatAppJsonp',
-            pluginCommonName: 'pluginCommon'
+            pluginCommonName: 'pluginCommon',
+            pluginExportName:'PLUGIN_EXPORT',
         });
         let defaultOpt = {
             componentsPath:['components'],

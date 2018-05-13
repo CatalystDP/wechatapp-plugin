@@ -1,6 +1,6 @@
 {
-    "publicComponents": {
-      "plugin-component": "components/plugin-component"
-    },
-    "main": "index.js"
-  }
+  "publicComponents": {
+    "list": "components/list/list"
+  },
+  "main": "index.js"
+}

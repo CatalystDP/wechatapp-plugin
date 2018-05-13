@@ -8,6 +8,11 @@ let baseConfig = {
 		filename: '[name].js',
 		// path: path.resolve(__dirname, 'dist'),
 	},
+	resolve:{
+		alias:{
+			util:path.join(__dirname,'utils')
+		}
+	},
 	devtool:'source-map'
 };
 module.exports = [
@@ -24,11 +29,18 @@ module.exports = [
 	}),
 	Object.assign({},baseConfig,{
 		entry:{
-			plugin:path.join(__dirname,'src/plugin/index.js')
+			index:path.join(__dirname,'src/plugin/index.js')
 		},
 		output:Object.assign({},baseConfig.output,{
-			path:path.join(__dirname,'dist/plugin')
-		})
+			path:path.join(__dirname,'dist/plugin'),
+			devtoolModuleFilenameTemplate: "webpack-wechatapp-plugin:///[resource-path]?[loaders]"
+		}),
+		plugins:[
+			new WechatappPlugin({
+				devMode:WechatappPlugin.mode.PLUGIN,
+				jsonpFuncName:'wechatAppPluginJsonp'
+			})
+		]
 	})
 ];
 // module.exports = {
