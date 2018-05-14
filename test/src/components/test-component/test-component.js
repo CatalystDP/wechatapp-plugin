@@ -1,5 +1,6 @@
 const testUtil = require('util/test-util');
 const testLib = require('./test-component-lib');
+const liba = require('../components-libs/liba');
 Component({
     properties: {
       // 这里定义了innerText属性，属性值可以在组件使用时指定
