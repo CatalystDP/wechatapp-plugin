@@ -7,5 +7,21 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle":"black"
-  }
+  },
+  "subPackages":[
+    {
+      "root":"packageA",
+      "pages":[
+        "pages/pageA1/pageA1",
+        "pages/pageA2/pageA2"
+      ]
+    },{
+      "root":"packageB",
+      "pages":[
+        "pages/pageB1/pageB1",
+        "pages/pageB2/pageB2"
+      ]
+    }
+  ]
+
 }
