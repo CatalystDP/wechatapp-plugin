@@ -1,4 +1,5 @@
 const testUtil = require('util/test-util');
+const testLib = require('./test-component-lib');
 Component({
     properties: {
       // 这里定义了innerText属性，属性值可以在组件使用时指定
@@ -13,6 +14,7 @@ Component({
     },
     ready(){
       testUtil.f('test-component');
+      testLib.print();
     },
     methods: {
       // 这里是一个自定义方法
