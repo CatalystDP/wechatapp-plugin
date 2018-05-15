@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const WechatappPlugin = require('../index');
-
 module.exports = {
 	entry: {
 		app: path.join(__dirname, 'src/app.js'),
@@ -16,7 +15,17 @@ module.exports = {
 		}
 	},
 	plugins: [
-		new WechatappPlugin()
+		new WechatappPlugin({
+			// fileLoaderExt:['less']
+		})
 	],
+	module: {
+		rules: [{
+			test: /\.less$/,
+			use: WechatappPlugin.wrapStyleLoaderConfig({
+				loader: 'less-loader'
+			})
+		}]
+	},
 	devtool: 'source-map',
 };
