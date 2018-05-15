@@ -1,6 +1,15 @@
 const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
+function fileLoader(ext = '[ext]'){
+    return {
+        loader: 'file-loader',
+        options: {
+            useRelativePath: true,
+            name: `[name].${ext}`,
+        }
+    };
+}
 class WechatAppPlugin {
     /**
      * @constructor 
@@ -62,15 +71,6 @@ const moduleRoute = {
  * @description //包装样式处理，例如使用了less作为样式处理把该函数的返回放到module.rules 的use字段上
  * @param {Object} loaderConfig
  */
-function fileLoader(ext = '[ext]'){
-    return {
-        loader: 'file-loader',
-        options: {
-            useRelativePath: true,
-            name: `[name].${ext}`,
-        }
-    };
-}
 WechatAppPlugin.wrapStyleLoaderConfig = function(loaderConfig={}){
     return [
         fileLoader('wxss'),
