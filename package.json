@@ -1,6 +1,6 @@
 {
   "name": "wechatapp-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "directories": {
@@ -18,8 +18,7 @@
     "webpack": "3"
   },
   "dependencies": {
-    "less-loader": "3",
-    "webpack": "3"
+    "less-loader": "3"
   },
   "devDependencies": {
     "acorn": "^5.5.3",
