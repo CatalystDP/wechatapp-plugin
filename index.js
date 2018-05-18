@@ -17,7 +17,8 @@ class WechatAppPlugin {
      *    @param {String}[option.devMode=WechatAppPlugin.mode.APP] 开发模式
      *    @param {String} [option.ext='.js']
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
-     *        
+     *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
+     *    @param {String} [option.customDirs] 自定义入口的目录名称 自定义模式下必传
      */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {
@@ -26,7 +27,9 @@ class WechatAppPlugin {
             appCommonName: 'appCommon',
             jsonpFuncName: 'wechatAppJsonp',
             pluginCommonName: 'pluginCommon',
+            customCommonName:'customCommon',
             pluginExportName:'PLUGIN_EXPORT',
+            customFiles:[]
         });
         let defaultOpt = {
             componentsPath:['components'],
@@ -61,11 +64,13 @@ class WechatAppPlugin {
 }
 WechatAppPlugin.mode = {
     APP: 'app',
-    PLUGIN: 'plugin'
+    PLUGIN: 'plugin',
+    CUSTOM:'custom'
 };
 const moduleRoute = {
     [WechatAppPlugin.mode.APP]:'AppDevModule',
-    [WechatAppPlugin.mode.PLUGIN]:'PluginDevModule'
+    [WechatAppPlugin.mode.PLUGIN]:'PluginDevModule',
+    [WechatAppPlugin.mode.CUSTOM]:'CustomDevModule'
 };
 /**
  * @description //包装样式处理，例如使用了less作为样式处理把该函数的返回放到module.rules 的use字段上
