@@ -18,7 +18,7 @@ class WechatAppPlugin {
      *    @param {String} [option.ext='.js']
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
-     *    @param {String} [option.customDirs] 自定义入口的目录名称 自定义模式下必传
+     *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
      */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {
