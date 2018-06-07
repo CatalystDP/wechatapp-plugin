@@ -1,5 +1,6 @@
 //app.js
 const testUtil = require('util/test-util');
+const util = require('util/util');
 App({
   onLaunch: function () {
     // 展示本地存储能力

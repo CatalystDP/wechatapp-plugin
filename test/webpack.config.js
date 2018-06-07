@@ -19,11 +19,13 @@ module.exports = {
 	plugins: [
 		new WechatappPlugin({
 			// fileLoaderExt:['less']
+			minChunks: (module, count) => {
+				return count >= 2;
+			}
 		}),
 		new BundleAnalyzerPlugin({
-			analyzerMode: 'server',
-			analyzerHost: '127.0.0.1',
-			analyzerPort: 9999,
+			analyzerMode: 'static',
+			reportFilename: 'test.report.html',
 			openAnalyzer: false,
 		})
 	],

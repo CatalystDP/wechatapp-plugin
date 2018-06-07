@@ -1,6 +1,6 @@
 {
   "name": "wechatapp-plugin",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "directories": {
@@ -28,7 +28,7 @@
     "glob": "^7.1.2",
     "less": "^3.0.4",
     "lodash": "^4.17.10",
-    "webpack-bundle-analyzer": "^2.12.0",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-sources": "^1.1.0"
   }
 }

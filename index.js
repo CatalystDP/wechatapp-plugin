@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
-function fileLoader(ext = '[ext]'){
+function fileLoader(ext = '[ext]') {
     return {
         loader: 'file-loader',
         options: {
@@ -19,40 +19,42 @@ class WechatAppPlugin {
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
      *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
+     *    @param {Function} [option.minChunks] 传给CommonChunkPlugin 的minChunks参数用于决定抽取到common.js里面模块
      */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {
             devMode: WechatAppPlugin.mode.APP,
-            ext:'.js',
+            ext: '.js',
             appCommonName: 'appCommon',
             jsonpFuncName: 'wechatAppJsonp',
             pluginCommonName: 'pluginCommon',
-            customCommonName:'customCommon',
-            pluginExportName:'PLUGIN_EXPORT',
-            customFiles:[]
+            customCommonName: 'customCommon',
+            pluginExportName: 'PLUGIN_EXPORT',
+            customFiles: [],
+            minChunks: null
         });
         let defaultOpt = {
-            componentsPath:['components'],
-            fileLoaderExt:['png'],
+            componentsPath: ['components'],
+            fileLoaderExt: ['png'],
         };
-        _.forIn(defaultOpt,(value,key)=>{
+        _.forIn(defaultOpt, (value, key) => {
             let val;
-            if(Array.isArray(value)){
+            if (Array.isArray(value)) {
                 //处理选项为数组的情况
-                val = value.concat(Array.isArray(this.option[key])? this.option[key]:[]);
+                val = value.concat(Array.isArray(this.option[key]) ? this.option[key] : []);
             }
             this.option[key] = val;
         });
         this._route = {};
-        _.forIn(moduleRoute,(value,key)=>{
-            this._route[key] = (compiler)=>{
-                this.createDevModule(compiler,value);
+        _.forIn(moduleRoute, (value, key) => {
+            this._route[key] = (compiler) => {
+                this.createDevModule(compiler, value);
             }
         });
     }
-    createDevModule(compiler,name){
-        let Module = require(path.join(__dirname,'lib',name));
-        new Module(compiler,this.option);
+    createDevModule(compiler, name) {
+        let Module = require(path.join(__dirname, 'lib', name));
+        new Module(compiler, this.option);
     }
     apply(compiler) {
         compiler.plugin('environment', () => {
@@ -65,18 +67,18 @@ class WechatAppPlugin {
 WechatAppPlugin.mode = {
     APP: 'app',
     PLUGIN: 'plugin',
-    CUSTOM:'custom'
+    CUSTOM: 'custom'
 };
 const moduleRoute = {
-    [WechatAppPlugin.mode.APP]:'AppDevModule',
-    [WechatAppPlugin.mode.PLUGIN]:'PluginDevModule',
-    [WechatAppPlugin.mode.CUSTOM]:'CustomDevModule'
+    [WechatAppPlugin.mode.APP]: 'AppDevModule',
+    [WechatAppPlugin.mode.PLUGIN]: 'PluginDevModule',
+    [WechatAppPlugin.mode.CUSTOM]: 'CustomDevModule'
 };
 /**
  * @description //包装样式处理，例如使用了less作为样式处理把该函数的返回放到module.rules 的use字段上
  * @param {Object} loaderConfig
  */
-WechatAppPlugin.wrapStyleLoaderConfig = function(loaderConfig={}){
+WechatAppPlugin.wrapStyleLoaderConfig = function (loaderConfig = {}) {
     return [
         fileLoader('wxss'),
         loaderConfig
