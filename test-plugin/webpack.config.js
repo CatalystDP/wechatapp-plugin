@@ -41,9 +41,8 @@ module.exports = [
 				jsonpFuncName:'wechatAppPluginJsonp'
 			}),
 			new BundleAnalyzerPlugin({
-				analyzerMode: 'server',
-				analyzerHost: '127.0.0.1',
-				analyzerPort: 9999,
+				analyzerMode: 'static',
+				reportFilename: 'test.plugin.report.html',
 				openAnalyzer: false,
 			})
 		]
@@ -56,11 +55,28 @@ module.exports = [
 			path:path.join(__dirname,'dist/custom')
 		}),
 		plugins:[
+			new BundleAnalyzerPlugin({
+				analyzerMode: 'static',
+				reportFilename: 'test.custom.report.html',
+				openAnalyzer: false,
+			}),
 			new WechatappPlugin({
 				devMode:WechatappPlugin.mode.CUSTOM,
 				jsonpFuncName:'customJsonp',
 				projectRoot:path.join(__dirname,'src/plugin/components'),
-				customFiles:['list/list.js','a/list/list.js']
+				customFiles:['list/list.js','a/list/list.js'],
+				commonsChunkPlugins:[
+					new webpack.optimize.CommonsChunkPlugin({
+						name:'util',
+						chunks:['customCommon'],
+						minChunks:(module,count)=>{
+							if(module.resource){
+								console.log(module.resource);
+								return module.resource.indexOf('util.js')>-1;
+							}
+						}
+					})
+				]
 			}),
 		]
 	})

@@ -19,9 +19,51 @@ module.exports = {
 	plugins: [
 		new WechatappPlugin({
 			// fileLoaderExt:['less']
-			minChunks: (module, count) => {
-				return count >= 2;
-			}
+			extraCommonsChunkPluginsConfig: [
+				{
+					name: 'proxy',
+					minChunks: (module, count) => {
+						if (module.context) {
+							return [
+								'modules/index',
+								'utils'
+							].some(dir => {
+								return module.context.indexOf(dir) > -1;
+							});
+						}
+						return count >= 2;
+					}
+				},
+				{
+					name: 'page_index',
+					chunks: ['proxy'],
+					minChunks: (module, count) => {
+						if (module.context) {
+							return module.context.indexOf('modules/index') > -1;
+						}
+					}
+				},
+				{
+					name: 'util',
+					chunks:['proxy'],
+					minChunks: (module, count) => {
+						if (module.context) {
+							return module.context.indexOf('utils') > -1;
+						}
+					}
+				},
+			],
+			injectEntry: [
+				{
+					name: 'app',
+					chunks: ['util']
+				},
+				{
+					name: 'pages/index/index',
+					chunks: ['page_index']
+				}
+			],
+			minChunks: Infinity
 		}),
 		new BundleAnalyzerPlugin({
 			analyzerMode: 'static',

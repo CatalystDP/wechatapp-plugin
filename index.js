@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
+const webpack = require('webpack');
 function fileLoader(ext = '[ext]') {
     return {
         loader: 'file-loader',
@@ -10,6 +11,10 @@ function fileLoader(ext = '[ext]') {
         }
     };
 }
+/**@typedef InjectEntry 
+ * @property {string} name 入口模块名称
+ * @property {array} chunks 需要注入的chunks
+*/
 class WechatAppPlugin {
     /**
      * @constructor 
@@ -19,7 +24,10 @@ class WechatAppPlugin {
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
      *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
-     *    @param {Function} [option.minChunks] 传给CommonChunkPlugin 的minChunks参数用于决定抽取到common.js里面模块
+     *    @param {Function | Number} [option.minChunks] 传给CommonChunkPlugin 的minChunks参数用于决定抽取到common.js里面模块
+     *    @param {Object} [option.extraCommonsChunkPluginsConfig] 额外的CommonsChunkPlugin数组
+     *    @param {Object} [option.defaultCommonsChunkConfig] 传给默认的CommonsChunkPlugin的配置 
+     *    @param {InjectEntry | InjectEntry[]} [option.injectEntry] 指定需要注入commonsChunks入口
      */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {
