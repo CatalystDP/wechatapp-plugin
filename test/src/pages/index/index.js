@@ -3,6 +3,7 @@
 const app = getApp()
 const testUtil = require('util/test-util');
 require('../../modules/index/testmodule1').print();
+require('../../modules/testmodule2/testmodule2').print();
 // const util = require('util/util');
 Page({
   data: {

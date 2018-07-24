@@ -22,10 +22,12 @@ module.exports = {
 			extraCommonsChunkPluginsConfig: [
 				{
 					name: 'proxy',
+					// children:true,
 					minChunks: (module, count) => {
 						if (module.context) {
 							return [
 								'modules/index',
+								'testmodule2',
 								'utils'
 							].some(dir => {
 								return module.context.indexOf(dir) > -1;
@@ -56,12 +58,12 @@ module.exports = {
 			injectEntry: [
 				{
 					name: 'app',
-					chunks: ['util']
-				},
-				{
-					name: 'pages/index/index',
-					chunks: ['page_index']
+					chunks: ['proxy','util','page_index']
 				}
+				// {
+				// 	name: 'pages/index/index',
+				// 	chunks: ['page_index']
+				// }
 			],
 			minChunks: Infinity
 		}),
