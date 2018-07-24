@@ -28,6 +28,7 @@
     "glob": "^7.1.2",
     "less": "^3.0.4",
     "lodash": "^4.17.10",
+    "unixify": "^1.0.0",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-sources": "^1.1.0"
   }
