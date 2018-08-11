@@ -20,6 +20,11 @@ class WechatAppPlugin {
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
      *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
      *    @param {Function} [option.minChunks] 传给CommonChunkPlugin 的minChunks参数用于决定抽取到common.js里面模块
+     *    @param {Array} [option.componentsPath] 组件的目录，必须是相对路径
+     *    @param {Array} [option.fileLoaderExt] 需要file-loader处理的文件后缀
+     *    @param {Function} [option.onEmitAssets] 当资源要写入文件系统时触发 
+     *    @param {Function} [option.onAditionalAssets ] 额外的资源需要作为入口，需要返回一个数组
+     *    @param {Function} [option.onAdditionalEntry] 额外的入口js，需要返回一个对象
      */
     constructor(option = {}) {
         this.option = _.defaults(option || {}, {

@@ -38,7 +38,13 @@ module.exports = [
 		plugins:[
 			new WechatappPlugin({
 				devMode:WechatappPlugin.mode.PLUGIN,
-				jsonpFuncName:'wechatAppPluginJsonp'
+				jsonpFuncName:'wechatAppPluginJsonp',
+				onAdditionalEntry:function(){
+
+				},
+				onAditionalAssets:function(){
+					return [];
+				},
 			}),
 			new BundleAnalyzerPlugin({
 				analyzerMode: 'server',
@@ -60,7 +66,14 @@ module.exports = [
 				devMode:WechatappPlugin.mode.CUSTOM,
 				jsonpFuncName:'customJsonp',
 				projectRoot:path.join(__dirname,'src/plugin/components'),
-				customFiles:['list/list.js','a/list/list.js']
+				customFiles:['list/list.js','a/list/list.js'],
+				onAdditionalEntry:function(){
+					console.log('custom addional entry');
+					return {};
+				},
+				onAditionalAssets:function(){
+					return [];
+				},
 			}),
 		]
 	})
