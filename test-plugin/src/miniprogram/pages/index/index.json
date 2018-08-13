@@ -1,5 +1,6 @@
 {
   "usingComponents": {
+    "test-component":"../../external-components/test-component/test-component",
     "list": "plugin://myPlugin/list"
   }
 }
