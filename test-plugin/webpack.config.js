@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const WechatappPlugin = require('../index');
+const WechatappPlugin = require('../');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const glob = require('glob');
 let baseConfig = {
@@ -25,34 +25,37 @@ module.exports = [
 			path: path.join(__dirname, 'dist/miniprogram')
 		}),
 		plugins: [
-			new WechatappPlugin({
-				onAdditionalEntry: function () {
-					console.log('plugin addional entry');
-					return {
-						'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.js')
-					};
-				},
-				onAdditionalAssets: function () {
-					let assets = glob.sync('**/*.*', {
-						cwd: path.resolve(__dirname, '../test/src/components/test-component/'),
-						ignore: '**/*.js',
-						realpath: true
-					})
-					return assets;
-				},
-				onEmitAssets: function (assets = {}) {
-					let keys = Object.keys(assets);
-					let testComponentKey = keys.filter(key => {
-						return key.indexOf('src/components/test-component') > -1;
-					})
-					testComponentKey.forEach(key => {
-						let newkey = key.replace(/.*(test-component\/.*)/g, 'external-components/$1');
-						console.log(newkey);
-						assets[newkey] = assets[key];
-						delete assets[key];
-					});
-				}	
-			})
+			new WechatAppPlugin(
+				{
+					devMode:'f',
+					onAdditionalEntry: function () {
+						console.log('plugin addional entry');
+						return {
+							'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.js')
+						};
+					},
+					onAdditionalAssets: function () {
+						let assets = glob.sync('**/*.*', {
+							cwd: path.resolve(__dirname, '../test/src/components/test-component/'),
+							ignore: '**/*.js',
+							realpath: true
+						})
+						return assets;
+					},
+					onEmitAssets: function (assets = {}) {
+						let keys = Object.keys(assets);
+						let testComponentKey = keys.filter(key => {
+							return key.indexOf('src/components/test-component') > -1;
+						})
+						testComponentKey.forEach(key => {
+							let newkey = key.replace(/.*(test-component\/.*)/g, 'external-components/$1');
+							console.log(newkey);
+							assets[newkey] = assets[key];
+							delete assets[key];
+						});
+					}
+				}
+			)
 		]
 	}),
 	Object.assign({}, baseConfig, {
