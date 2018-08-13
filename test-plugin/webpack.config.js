@@ -2,79 +2,94 @@ const webpack = require('webpack');
 const path = require('path');
 const WechatappPlugin = require('../index');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const glob = require('glob');
 let baseConfig = {
 	entry: {},
 	output: {
 		filename: '[name].js',
 		// path: path.resolve(__dirname, 'dist'),
 	},
-	resolve:{
-		alias:{
-			util:path.join(__dirname,'utils')
+	resolve: {
+		alias: {
+			util: path.join(__dirname, 'utils')
 		}
 	},
-	devtool:'source-map'
+	devtool: 'source-map'
 };
 module.exports = [
-	Object.assign({},baseConfig,{
-		entry:{
+	Object.assign({}, baseConfig, {
+		entry: {
 			app: path.join(__dirname, 'src/miniprogram/app.js'),
 		},
-		output:Object.assign({},baseConfig.output,{
-			path:path.join(__dirname,'dist/miniprogram')
+		output: Object.assign({}, baseConfig.output, {
+			path: path.join(__dirname, 'dist/miniprogram')
 		}),
-		plugins:[
+		plugins: [
 			new WechatappPlugin()
 		]
 	}),
-	Object.assign({},baseConfig,{
-		entry:{
-			index:path.join(__dirname,'src/plugin/index.js')
+	Object.assign({}, baseConfig, {
+		entry: {
+			index: path.join(__dirname, 'src/plugin/index.js')
 		},
-		output:Object.assign({},baseConfig.output,{
-			path:path.join(__dirname,'dist/plugin'),
+		output: Object.assign({}, baseConfig.output, {
+			path: path.join(__dirname, 'dist/plugin'),
 			devtoolModuleFilenameTemplate: "webpack-wechatapp-plugin:///[resource-path]?[loaders]"
 		}),
-		plugins:[
+		plugins: [
 			new WechatappPlugin({
-				devMode:WechatappPlugin.mode.PLUGIN,
-				jsonpFuncName:'wechatAppPluginJsonp',
-				onAdditionalEntry:function(){
+				devMode: WechatappPlugin.mode.PLUGIN,
+				jsonpFuncName: 'wechatAppPluginJsonp',
+				onAdditionalEntry: function () {
 
 				},
-				onAditionalAssets:function(){
+				onAditionalAssets: function () {
 					return [];
 				},
 			}),
 			new BundleAnalyzerPlugin({
-				analyzerMode: 'server',
-				analyzerHost: '127.0.0.1',
-				analyzerPort: 9999,
+				analyzerMode: 'static',
+				reportFilename:'plugin-report.html',
 				openAnalyzer: false,
 			})
 		]
 	}),
-	Object.assign({},baseConfig,{
-		entry:{
-			index:'a'
+	Object.assign({}, baseConfig, {
+		entry: {
+			index: 'a'
 		},
-		output:Object.assign({},baseConfig.output,{
-			path:path.join(__dirname,'dist/custom')
+		output: Object.assign({}, baseConfig.output, {
+			path: path.join(__dirname, 'dist/custom')
 		}),
-		plugins:[
+		plugins: [
 			new WechatappPlugin({
-				devMode:WechatappPlugin.mode.CUSTOM,
-				jsonpFuncName:'customJsonp',
-				projectRoot:path.join(__dirname,'src/plugin/components'),
-				customFiles:['list/list.js','a/list/list.js'],
-				onAdditionalEntry:function(){
+				devMode: WechatappPlugin.mode.CUSTOM,
+				jsonpFuncName: 'customJsonp',
+				projectRoot: path.join(__dirname, 'src/plugin/components'),
+				customFiles: ['list/list.js', 'a/list/list.js'],
+				onAdditionalEntry: function () {
 					console.log('custom addional entry');
-					return {};
+					return {
+						'external-components/test-component': path.resolve(__dirname,'../test/src/components/test-component/test-component.js')
+					};
 				},
-				onAditionalAssets:function(){
-					return [];
+				onAdditionalAssets: function () {
+					let assets = glob.sync('**/*.*',{
+						cwd:path.resolve(__dirname,'../test/src/components/test-component/'),
+						ignore:'**/*.js',
+						realpath:true
+					})
+					return assets;
 				},
+				onEmitAssets: function (assets = {}) {
+
+				}
 			}),
+			new BundleAnalyzerPlugin({
+				analyzerMode: 'static',
+				reportFilename: 'custom-component.report.html',
+				openAnalyzer: false,
+			})//分析包内模块组成
 		]
 	})
 ];

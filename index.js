@@ -23,7 +23,7 @@ class WechatAppPlugin {
      *    @param {Array} [option.componentsPath] 组件的目录，必须是相对路径
      *    @param {Array} [option.fileLoaderExt] 需要file-loader处理的文件后缀
      *    @param {Function} [option.onEmitAssets] 当资源要写入文件系统时触发 
-     *    @param {Function} [option.onAditionalAssets ] 额外的资源需要作为入口，需要返回一个数组
+     *    @param {Function} [option.onAdditionalAssets ] 额外的资源需要作为入口，需要返回一个数组
      *    @param {Function} [option.onAdditionalEntry] 额外的入口js，需要返回一个对象
      */
     constructor(option = {}) {
