@@ -25,9 +25,8 @@ module.exports = [
 			path: path.join(__dirname, 'dist/miniprogram')
 		}),
 		plugins: [
-			new WechatAppPlugin(
+			new WechatappPlugin(
 				{
-					devMode:'f',
 					onAdditionalEntry: function () {
 						console.log('plugin addional entry');
 						return {

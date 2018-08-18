@@ -30,5 +30,6 @@
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-sources": "^1.1.0"
   },
+  "types":"./index.d.ts",
   "devDependencies": {}
 }

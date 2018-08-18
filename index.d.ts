@@ -1,7 +1,7 @@
-declare type TdevMode = 'app' | 'plugin' | 'custom';
-declare type TwebpackMinChunks = (module: object, count: number) => boolean;
-declare type TadditionalEntry = {};
-interface IPluginCtorOption {
+export type TdevMode = 'app' | 'plugin' | 'custom';
+export type TwebpackMinChunks = (module: object, count: number) => boolean;
+export type TadditionalEntry = {};
+export interface IPluginCtorOption {
     /**
      *
      *
@@ -24,9 +24,10 @@ interface IPluginCtorOption {
     onAdditionalAssets?: () => string[],
     onAdditionalEntry?: () => TadditionalEntry
 };
-declare class WechatAppPlugin {
+class WechatAppPlugin {
     public constructor(options: IPluginCtorOption);
 }
-declare namespace WechatAppPlugin {
+namespace WechatAppPlugin {
     export function wrapStyleLoaderConfig(loaderConfig: object): object[]
 }
+export = WechatAppPlugin;
