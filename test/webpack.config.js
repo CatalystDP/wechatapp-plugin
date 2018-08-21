@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const WechatappPlugin = require('../');
+const WechatAppPlugin = require('../');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const NODE_MODULES_PATH = path.join(path.resolve(__dirname, '../'), 'node_modules');
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
 	module: {
 		rules: [{
 			test: /\.less$/,
-			use: WechatappPlugin.wrapStyleLoaderConfig({
+			use: WechatAppPlugin.wrapStyleLoaderConfig({
 				loader: 'less-loader'
 			})
 		}]

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "acorn": "^5.5.3",
+    "chalk": "^2.4.1",
     "co": "^4.6.0",
     "css-loader": "^0.28.11",
     "es6-promise": "^4.2.4",
