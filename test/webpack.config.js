@@ -1,6 +1,10 @@
 const webpack = require('webpack');
 const path = require('path');
+<<<<<<< HEAD
 const WechatAppPlugin = require('../index');
+=======
+const WechatAppPlugin = require('../');
+>>>>>>> origin/master
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const NODE_MODULES_PATH = path.join(path.resolve(__dirname, '../'), 'node_modules');
 const _ = require('lodash');

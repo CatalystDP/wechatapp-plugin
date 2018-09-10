@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const WechatappPlugin = require('../');
+const WechatAppPlugin = require('../');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const glob = require('glob');
 let baseConfig = {
@@ -66,8 +66,8 @@ module.exports = [
 			devtoolModuleFilenameTemplate: "webpack-wechatapp-plugin:///[resource-path]?[loaders]"
 		}),
 		plugins: [
-			new WechatappPlugin({
-				devMode: WechatappPlugin.mode.PLUGIN,
+			new WechatAppPlugin({
+				devMode: WechatAppPlugin.mode.PLUGIN,
 				jsonpFuncName: 'wechatAppPluginJsonp',
 				onAdditionalEntry: function () {
 					console.log('plugin addional entry');
@@ -111,8 +111,8 @@ module.exports = [
 			path: path.join(__dirname, 'dist/custom')
 		}),
 		plugins: [
-			new WechatappPlugin({
-				devMode: WechatappPlugin.mode.CUSTOM,
+			new WechatAppPlugin({
+				devMode: WechatAppPlugin.mode.CUSTOM,
 				jsonpFuncName: 'customJsonp',
 				projectRoot: path.join(__dirname, 'src/plugin/components'),
 				customFiles: ['list/list.js', 'a/list/list.js'],
