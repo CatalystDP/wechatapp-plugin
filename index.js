@@ -1,15 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
-function fileLoader(ext = '[ext]') {
-    return {
-        loader: 'file-loader',
-        options: {
-            useRelativePath: true,
-            name: `[name].${ext}`,
-        }
-    };
-}
+const util = require('./lib/util');
 class WechatAppPlugin {
     /**
      * @constructor 
@@ -57,6 +49,18 @@ class WechatAppPlugin {
             }
         });
     }
+    addLoaders(compiler) {
+        let { module } = compiler.options;
+        module.rules = module.rules || [];
+        module.rules.push({
+            test: new RegExp(`\\.(wxss|wxml|json|${this.pluginOption.fileLoaderExt.join('|')})`),
+            loader: 'file-loader',
+            options: {
+                useRelativePath: true,
+                name: '[name].[ext]',
+            }
+        });//增加file-loader 用来处理非js资源的复制
+    }
     createDevModule(compiler, name) {
         let Module = require(path.join(__dirname, 'lib', name));
         new Module(compiler, this.option);
@@ -65,6 +69,7 @@ class WechatAppPlugin {
         compiler.plugin('environment', () => {
             compiler.options && (compiler.options.target = 'web');
         })
+        this.addLoaders(compiler);
         typeof this._route[this.option.devMode] === 'function' && this._route[this.option.devMode](compiler);
         //根据开发模式路由到不同模块
     }
@@ -83,10 +88,10 @@ const moduleRoute = {
  * @description //包装样式处理，例如使用了less作为样式处理把该函数的返回放到module.rules 的use字段上
  * @param {Object} loaderConfig
  */
-WechatAppPlugin.wrapStyleLoaderConfig = function (loaderConfig = {}) {
+WechatAppPlugin.wrapStyleLoaderConfig = function (loaderConfig = []) {
     return [
-        fileLoader('wxss'),
-        loaderConfig
-    ];
+        util.fileLoader('wxss')
+    ].concat(loaderConfig);
 };
+WechatAppPlugin.fileLoader = util.fileLoader;
 module.exports = WechatAppPlugin;
