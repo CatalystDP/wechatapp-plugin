@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "cd test && webpack --display-modules",
+    "test": "cd test && cross-env DEBUG=wechatapp-plugin webpack --display-modules",
     "test-plugin": "cd test-plugin && webpack --display-modules"
   },
   "author": "CatalystDP",
@@ -19,7 +19,8 @@
     "acorn": "^5.5.3",
     "chalk": "^2.4.1",
     "co": "^4.6.0",
-    "css-loader": "^0.28.11",
+    "cross-env": "^5.2.0",
+    "debug": "^4.1.0",
     "es6-promise": "^4.2.4",
     "file-loader": "^1.1.11",
     "fs-extra": "^6.0.1",
@@ -27,10 +28,15 @@
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "lodash": "^4.17.10",
+    "mime": "^2.3.1",
     "unixify": "^1.0.0",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-sources": "^1.1.0"
   },
-  "types":"./index.d.ts",
-  "devDependencies": {}
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "css-loader": "0.28.11",
+    "extract-loader": "^3.0.0",
+    "url-loader": "^1.1.1"
+  }
 }

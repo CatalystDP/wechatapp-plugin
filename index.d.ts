@@ -19,7 +19,7 @@ export interface IPluginCtorOption {
     customFiles?: string[],
     minChunks?: null | TwebpackMinChunks,
     componentsPath?: string[],
-    fileLoaderExt?: string[],
+    picLoaderExt?: string[],
     onEmitAssets?: (assets: object) => void
     onAdditionalAssets?: () => string[],
     onAdditionalEntry?: () => TadditionalEntry

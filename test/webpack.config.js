@@ -22,6 +22,30 @@ module.exports = {
 	},
 	plugins: [
 		new WechatAppPlugin({
+			picLoaderExt: ['jpeg'],
+			onStyleLoaders: () => {
+				return [
+					'extract-loader',
+					{
+						loader: 'css-loader',
+						options: {
+							import: false
+						}
+					}];
+			},
+			onPicLoaders: () => {
+				return [
+					{
+						loader: WechatAppPlugin.loaders.picLoader,
+						options:{},
+						// loader:'url-loader',
+						// options:{
+						// 	limit:8*1024,
+						// 	fallback:WechatAppPlugin.util.fileLoader()
+						// }
+					}
+				];
+			},
 			minChunks: (module, count) => {
 				return count >= 2;
 			},
@@ -34,7 +58,6 @@ module.exports = {
 				externalComponents.forEach(component => {
 					entrys[`external-components/${component}`] = path.resolve(__dirname, `../test-plugin/src/plugin/components/${component}`);
 				});
-				console.log('extraEntrys', entrys);
 				// entrys = {};
 				return entrys;
 			},
@@ -48,13 +71,11 @@ module.exports = {
 			},
 			onEmitAssets: (assets = {}) => {
 				let keys = Object.keys(assets);
-				console.log(keys);
 				let testComponentKey = keys.filter(key => {
 					return key.indexOf('test-plugin/src/plugin/components') > -1;
 				})
 				testComponentKey.forEach(key => {
 					let newkey = key.replace(/.*(test-plugin\/src\/plugin\/components\/)(.*)/g, 'external-components/$2');
-					console.log(newkey);
 					assets[newkey] = assets[key];
 					delete assets[key];
 				});
@@ -67,12 +88,6 @@ module.exports = {
 		})
 	],
 	module: {
-		rules: [{
-			test: /\.less$/,
-			use: WechatAppPlugin.wrapStyleLoaderConfig({
-				loader: 'less-loader'
-			})
-		}]
 	},
 	devtool: 'source-map',
 };

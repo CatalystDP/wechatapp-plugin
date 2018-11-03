@@ -2,11 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    .test{
-        width:100%;
-    }
 }
-  
+.userinfo .test{
+    width:100%;
+}
 .userinfo-avatar {
     width: 128rpx;
     height: 128rpx;
