@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const WechatAppPlugin = require('../');
+const WechatAppPlugin = require('../dist/index');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const NODE_MODULES_PATH = path.join(path.resolve(__dirname, '../'), 'node_modules');
 const _ = require('lodash');
@@ -20,32 +20,66 @@ module.exports = {
 			util: path.join(__dirname, 'utils')
 		}
 	},
-	plugins: [
-		new WechatAppPlugin({
-			picLoaderExt: ['jpeg'],
-			onStyleLoaders: () => {
-				return [
-					'extract-loader',
-					{
-						loader: 'css-loader',
-						options: {
-							import: false
-						}
-					}];
+	module: {
+		rules: [
+			{
+				test: /\.(wxml)$/,
+				use: [
+					WechatAppPlugin.util.fileLoader()
+				]
 			},
-			onPicLoaders: () => {
-				return [
+			{
+				test: /\.(wxss|less)$/,
+				use: WechatAppPlugin.wrapStyleLoaderConfig()
+			},
+			{
+				test: /\.(png|jpeg)$/,
+				use: [
+					// WechatAppPlugin.util.fileLoader(),
 					{
 						loader: WechatAppPlugin.loaders.picLoader,
-						options:{},
-						// loader:'url-loader',
-						// options:{
-						// 	limit:8*1024,
-						// 	fallback:WechatAppPlugin.util.fileLoader()
-						// }
+						options: {
+							styleExt:['less']
+						}
 					}
-				];
+				]
 			},
+			{
+				test: /\.(json)$/,
+				use: [
+					WechatAppPlugin.util.fileLoader()
+				]
+			}
+		]
+	},
+	plugins: [
+		new WechatAppPlugin({
+			useDefaultLoader: false,
+			// fileLoaderExt: ['jpeg'],
+			// picLoaderExt: ['jpeg'],
+			// onStyleLoaders: () => {
+			// 	return [
+			// 		'extract-loader',
+			// 		{
+			// 			loader: 'css-loader',
+			// 			options: {
+			// 				import: false
+			// 			}
+			// 		}];
+			// },
+			// onPicLoaders: () => {
+			// 	return [
+			// 		{
+			// 			loader: WechatAppPlugin.loaders.picLoader,
+			// 			options:{},
+			// 			// loader:'url-loader',
+			// 			// options:{
+			// 			// 	limit:8*1024,
+			// 			// 	fallback:WechatAppPlugin.util.fileLoader()
+			// 			// }
+			// 		}
+			// 	];
+			// },
 			minChunks: (module, count) => {
 				return count >= 2;
 			},
@@ -87,7 +121,5 @@ module.exports = {
 			openAnalyzer: false,
 		})
 	],
-	module: {
-	},
 	devtool: 'source-map',
 };

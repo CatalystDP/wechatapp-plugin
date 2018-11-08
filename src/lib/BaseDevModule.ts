@@ -1,6 +1,7 @@
 const co = require('co');
-const webpack = require('webpack');
-const path = require('path');
+import path = require('path');
+import webpack = require('webpack');
+import IPluginOptions from '../interfaces/IPluginOptions';
 const { ConcatSource, RawSource } = require('webpack-sources');
 const acorn = require('acorn');
 const glob = require('glob');
@@ -11,7 +12,13 @@ const chalk = require('chalk');
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
 const assetsName = 'assets';
 class BaseDevModule {
-    constructor(compiler, pluginOption = {}) {
+    protected compiler: any;
+    protected pluginOption: IPluginOptions;
+    protected distPath: string;
+    protected globalVar: string;
+    protected projectRoot: string;
+    protected entryResource: string[];
+    constructor(compiler, pluginOption: IPluginOptions) {
         this.compiler = compiler;
         this.pluginOption = pluginOption;
         this.distPath = compiler.options.output.path;
@@ -76,19 +83,21 @@ class BaseDevModule {
     //设置资源
     addAssetsEntry(assets = []) {
         let entry = {};
-        let extraAssets = glob.sync(`**/*.*`, {
-            ignore: `**/*${this.pluginOption.ext}`,
-            cwd: this.getProjectRoot(),
-            realpath: true
-        });
+        let globStr = `**/*.*(${this.pluginOption.assetsExt.join('|')})`;
+        let extraAssets = glob.
+            sync(globStr, {
+                // ignore: `**/*${this.pluginOption.ext}`,
+                cwd: this.getProjectRoot(),
+                realpath: true
+            });
         if (Array.isArray(assets) && assets.length > 0) {
             extraAssets = extraAssets.concat(assets);
         }
         _.isFunction(this.pluginOption.onAdditionalAssets) &&
             (extraAssets = extraAssets.concat(this.pluginOption.onAdditionalAssets.call(this)));
-        extraAssets = extraAssets.filter((file) => {
-            return !new RegExp(`\\.${this.pluginOption.picLoaderExt.join('|')}$`).test(file);
-        });
+        // extraAssets = extraAssets.filter((file) => {
+        //     return !new RegExp(`\\.${this.pluginOption.picLoaderExt.join('|')}$`).test(file);
+        // });
         this.compiler.apply(new MultiEntryPlugin(this.getProjectRoot(), extraAssets, assetsName));
     }
     *appendAsset(compilation) {
@@ -197,4 +206,4 @@ function webpackJsonp(){
         });
     }
 }
-module.exports = BaseDevModule;
+export default BaseDevModule;

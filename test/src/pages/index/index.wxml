@@ -1,5 +1,8 @@
 <!--index.wxml-->
 <view class="container">
+  <view class="bg" style="width:100%;height:30px;" hover-class="none" hover-stop-propagation="false">
+
+  </view>
   <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
     <block wx:else>

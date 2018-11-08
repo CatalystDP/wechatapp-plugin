@@ -76,4 +76,4 @@ class PluginDevModule extends BaseDevModule {
         return this.pluginOption.pluginCommonName;
     }
 }
-module.exports = PluginDevModule;
+export default PluginDevModule;

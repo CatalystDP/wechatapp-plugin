@@ -13,4 +13,4 @@ button {
 }
 .bg{
   background-image: url("./img/webpack-logo.jpeg");
-};
+}

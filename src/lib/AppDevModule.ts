@@ -1,11 +1,16 @@
-const BaseDevModule = require('./BaseDevModule');
+import BaseDevModule from './BaseDevModule';
+import IPluginOptions from '../interfaces/IPluginOptions';
 const path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
 const glob = require('glob');
 class AppDevModule extends BaseDevModule {
-    constructor(...args) {
-        super(...args);
+    protected pages: string[];
+    protected appJson: {
+        [key: string]: any
+    };
+    constructor(compiler, pluginOptions: IPluginOptions) {
+        super(compiler, pluginOptions);
         this.attachPoint();
     }
     attachPoint() {
@@ -37,7 +42,7 @@ class AppDevModule extends BaseDevModule {
         let componentEntry = this.getComponentEntry();
         _.extend(entry, componentEntry);
         _.isFunction(this.pluginOption.onAdditionalEntry) &&
-        (_.extend(entry, this.pluginOption.onAdditionalEntry.call(this)));
+            (_.extend(entry, this.pluginOption.onAdditionalEntry.call(this)));
         _.forIn(entry, val => {
             this.entryResource.push(val);
         })
@@ -66,4 +71,4 @@ class AppDevModule extends BaseDevModule {
         }
     }
 }
-module.exports = AppDevModule;
+export default AppDevModule;

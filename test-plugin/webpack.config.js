@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const WechatAppPlugin = require('../');
+const WechatAppPlugin = require('../dist');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const glob = require('glob');
 let baseConfig = {

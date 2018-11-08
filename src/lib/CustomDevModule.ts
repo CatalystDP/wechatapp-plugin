@@ -1,13 +1,14 @@
-const BaseDevModule = require('./BaseDevModule');
+import BaseDevModule from './BaseDevModule';
+import IPluginOptions from '../interfaces/IPluginOptions';
 const path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
 const glob = require('glob');
 const acorn = require('acorn');
 const { ConcatSource } = require('webpack-sources');
-class PluginDevModule extends BaseDevModule {
-    constructor(...args) {
-        super(...args);
+class CustomDevModule extends BaseDevModule {
+    constructor(compiler, pluginOptions: IPluginOptions) {
+        super(compiler, pluginOptions);
         this.attachPoint();
     }
     attachPoint() {
@@ -63,4 +64,4 @@ class PluginDevModule extends BaseDevModule {
         return this.pluginOption.customCommonName;
     }
 }
-module.exports = PluginDevModule;
+export default CustomDevModule;

@@ -1,4 +1,5 @@
-module.exports = {
+import * as path from 'path';
+export default {
     fileLoader(ext = '[ext]') {
         return {
             loader: 'file-loader',
@@ -8,7 +9,7 @@ module.exports = {
             }
         };
     },
-    getPackageJson(){
-        return require('../package.json');
+    getPackageJson() {
+        return require('../../package.json');
     }
 };
