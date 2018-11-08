@@ -23,6 +23,12 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test:/\.(html)$/,
+				use:[
+					'html-loader'
+				]
+			},
+			{
 				test: /\.(wxml)$/,
 				use: [
 					WechatAppPlugin.util.fileLoader()

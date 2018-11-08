@@ -3,3 +3,4 @@ dist/
 test/dist
 .vscode
 yarn.lock
+*error.log
