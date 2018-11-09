@@ -21,3 +21,6 @@
 .usermotto {
     margin-top: 200px;
 }
+.bg{
+    background-image: url(../../img/webpack-logo.jpeg);
+  }

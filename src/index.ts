@@ -10,15 +10,47 @@ class WechatAppPlugin {
         PLUGIN: 'plugin',
         CUSTOM: 'custom'
     };
-    public static wrapStyleLoaderConfig = function (loaderConfig = []) {
+    public static wrapStyleLoaderConfig = function (loaders = [], loaderConfig: {
+        'extract-loader': any
+    } = <any>{}) {
         return [
             util.fileLoader('wxss'),
-            'extract-loader',
-            'css-loader'
-        ].concat(loaderConfig);
+            // {
+            //     loader: 'extract-loader',
+            //     options: Object.assign({}, loaderConfig['extract-loader'] || {})
+            // },
+            // {
+            //     loader: 'css-loader',
+            //     options: {
+            //         import: false
+            //     }
+            // }
+        ].concat(loaders);
+    };
+    public static wrapViewLoaderConfig = function (loaders = [], loaderConfig: {
+        'extract-loader': any,
+        'html-loader': any
+    } = <any>{}) {
+        return [
+            WechatAppPlugin.util.fileLoader('wxml'),
+            WechatAppPlugin.loaders.extractLoader,
+            // {
+            //     loader: 'extract-loader',
+            //     options: Object.assign({}, loaderConfig['extract-loader'] || {})
+            // },
+            {
+                loader: 'html-loader',
+                options: Object.assign({
+                    attrs: [
+                        'image:src'
+                    ]
+                }, loaderConfig['html-loader'] || {})
+            }
+        ].concat(loaders)
     };
     public static loaders = {
-        picLoader: `${require.resolve('./loaders/picLoader')}`
+        assetsLoader: `${require.resolve('./loaders/assetsLoader')}`,
+        extractLoader: require.resolve('./loaders/extractLoader')
     };
     public static util = util;
     private _route: {
@@ -56,7 +88,7 @@ class WechatAppPlugin {
         let defaultOpt = {
             componentsPath: ['components'],
             fileLoaderExt: [],
-            assetsExt:['wxml','json','wxss']
+            assetsExt: ['wxml', 'json', 'wxss']
             // picLoaderExt: ['png'],
             // styleLoaderExt: ['wxss']
         };

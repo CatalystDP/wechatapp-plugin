@@ -4,3 +4,4 @@ test/dist
 .vscode
 yarn.lock
 *error.log
+package-lock.json*

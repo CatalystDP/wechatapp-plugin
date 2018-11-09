@@ -15,4 +15,5 @@
   </view>
   <test-component inner-text="Some text"></test-component>
   <button  wx:for="{{subPageBtns}}" wx:key="{{index}}" bindtap="goSub" data-url="{{item}}" type="primary">子页面{{item}}</button>
+  <image src="../../img/webpack-logo.jpeg" />
 </view>

@@ -23,29 +23,25 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test:/\.(html)$/,
-				use:[
-					'html-loader'
-				]
+				test: /\.(wxss)/,
+				use: WechatAppPlugin.wrapStyleLoaderConfig([], {
+				})
 			},
 			{
-				test: /\.(wxml)$/,
-				use: [
-					WechatAppPlugin.util.fileLoader()
-				]
-			},
-			{
-				test: /\.(wxss|less)$/,
-				use: WechatAppPlugin.wrapStyleLoaderConfig()
+				test: /\.(wxml)/,
+				use: WechatAppPlugin.wrapViewLoaderConfig([], {
+				})
+
 			},
 			{
 				test: /\.(png|jpeg)$/,
 				use: [
 					// WechatAppPlugin.util.fileLoader(),
 					{
-						loader: WechatAppPlugin.loaders.picLoader,
+						loader: WechatAppPlugin.loaders.assetsLoader,
 						options: {
-							styleExt:['less']
+							styleExt: ['less'],
+							// limit: 8 * 1024//限制8k以上不能转base64 
 						}
 					}
 				]
@@ -89,37 +85,37 @@ module.exports = {
 			minChunks: (module, count) => {
 				return count >= 2;
 			},
-			onAdditionalEntry: () => {
-				const externalComponents = [
-					'list/list',
-					'a/list/list'
-				];
-				let entrys = {};
-				externalComponents.forEach(component => {
-					entrys[`external-components/${component}`] = path.resolve(__dirname, `../test-plugin/src/plugin/components/${component}`);
-				});
-				// entrys = {};
-				return entrys;
-			},
-			onAdditionalAssets: () => {
-				let assets = glob.sync('**/*.*', {
-					cwd: path.resolve(__dirname, '../test-plugin/src/plugin/components/'),
-					ignore: '**/*.js',
-					realpath: true
-				})
-				return assets;
-			},
-			onEmitAssets: (assets = {}) => {
-				let keys = Object.keys(assets);
-				let testComponentKey = keys.filter(key => {
-					return key.indexOf('test-plugin/src/plugin/components') > -1;
-				})
-				testComponentKey.forEach(key => {
-					let newkey = key.replace(/.*(test-plugin\/src\/plugin\/components\/)(.*)/g, 'external-components/$2');
-					assets[newkey] = assets[key];
-					delete assets[key];
-				});
-			}
+			// onAdditionalEntry: () => {
+			// 	const externalComponents = [
+			// 		'list/list',
+			// 		'a/list/list'
+			// 	];
+			// 	let entrys = {};
+			// 	externalComponents.forEach(component => {
+			// 		entrys[`external-components/${component}`] = path.resolve(__dirname, `../test-plugin/src/plugin/components/${component}`);
+			// 	});
+			// 	// entrys = {};
+			// 	return entrys;
+			// },
+			// onAdditionalAssets: () => {
+			// 	let assets = glob.sync('**/*.*', {
+			// 		cwd: path.resolve(__dirname, '../test-plugin/src/plugin/components/'),
+			// 		ignore: '**/*.js',
+			// 		realpath: true
+			// 	})
+			// 	return assets;
+			// },
+			// onEmitAssets: (assets = {}) => {
+			// 	let keys = Object.keys(assets);
+			// 	let testComponentKey = keys.filter(key => {
+			// 		return key.indexOf('test-plugin/src/plugin/components') > -1;
+			// 	})
+			// 	testComponentKey.forEach(key => {
+			// 		let newkey = key.replace(/.*(test-plugin\/src\/plugin\/components\/)(.*)/g, 'external-components/$2');
+			// 		assets[newkey] = assets[key];
+			// 		delete assets[key];
+			// 	});
+			// }
 		}),
 		new BundleAnalyzerPlugin({
 			analyzerMode: 'static',
