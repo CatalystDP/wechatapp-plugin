@@ -1,4 +1,4 @@
 <view>
     {{text}}
-      <image src="../../../img/webpack-logo.jpeg"/>
+      <image src="../../../img/webpack-logo.jpeg?network=true"/>
 </view>

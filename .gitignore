@@ -1,6 +1,7 @@
 node_modules/
 dist/
-test/dist
+test/dist/
+test/measure.log
 .vscode
 yarn.lock
 *error.log

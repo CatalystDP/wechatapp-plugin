@@ -1,13 +1,13 @@
 
-import { debugLog } from '../tools/debug';
-import util from '../lib/util';
+import { debugLog } from '../../tools/debug';
+import util from '../../lib/util';
 import * as _ from 'lodash';
 /**
  * 处理小程序中图片引用的loader,包括wxss js wxml内引用的需要不同的处理流程
  */
 import mime = require('mime');
 
-import WechatappPlugin = require('../index');
+import WechatappPlugin = require('../../index');
 import loaderUtils = require('loader-utils');
 import * as path from 'path';
 import fileLoader = require('file-loader');
@@ -23,9 +23,10 @@ function getDataUri(resource: string, base64Str: string): string {
     let dataStr = `data:${type};base64,${base64Str}`;
     return dataStr;
 }
-function convertToAbsolutePath(relativePath: string) {
-    return '/' + relativePath.replace(/\.\.\//g, '');
-};
+function convertToNetworkUrl(
+    loaderContext, loaderOption: loaderUtils.OptionObject) {
+        
+}
 function getRelativePath(from: string, to: string) {
     return path.relative(path.dirname(from), to);
 }
@@ -40,8 +41,8 @@ function processFromStyle(context, content: Buffer, loaderOptions: loaderUtils.O
         } else {
             let { issuer } = context._module;
             if (issuer.resource) {
-                let outputPath = `${loaderOptions.publicPath.replace(/\/$/, '')}${convertToAbsolutePath(getRelativePath(issuer.resource, context.resource))}`;
-                return returnResult(outputPath);
+                // let outputPath = `${loaderOptions.publicPath.replace(/\/$/, '')}${convertToAbsolutePath(getRelativePath(issuer.resource, context.resource))}`;
+                // return returnResult(outputPath);
             }
         }
     }
@@ -62,13 +63,20 @@ function processFromViews(context, content: Buffer, loaderOptions: loaderUtils.O
         debugLog(LOG_TAG, 'process-from-view', 'using file');
         let { issuer } = context._module;
         if (issuer.resource) {
-            let relativeResource = getRelativePath(issuer.resource, context.resource);
+            let relativeResource = getRelativePath(issuer.resource, context.resourcePath);
+            let fileLoaderContext = Object.assign(
+                {}, context, {
+                    query: Object.assign({}, WechatappPlugin.util.fileLoader(), {
+
+                    })
+                });
+            fileLoader.call(fileLoaderContext, content);
             return returnResult(relativeResource);
         }
     }
     debugLog(LOG_TAG, 'process-from-view', 'using base64');
     let dataStr: string = content.toString('base64');
-    let resource: string = context.resource;
+    let resource: string = context.resourcePath;
     if (typeof resource === 'string') {
         dataStr = getDataUri(resource, dataStr)
     }

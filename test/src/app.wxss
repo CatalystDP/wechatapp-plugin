@@ -12,5 +12,5 @@ button {
   margin:10rpx;
 }
 .bg{
-  background-image: url(./img/webpack-logo.jpeg);
+  /* background-image: url(./img/webpack-logo.jpeg); */
 }

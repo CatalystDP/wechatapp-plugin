@@ -1,10 +1,10 @@
 import * as vm from "vm";
 import * as path from "path";
+import * as url from 'url';
 import { getOptions } from "loader-utils";
 import * as resolve from "resolve";
 import * as btoa from "btoa";
 import { debugLog } from "../tools/debug";
-
 const LOG_TAG = 'extractLoader';
 /**
  * @typedef {Object} LoaderContext
@@ -25,7 +25,7 @@ const LOG_TAG = 'extractLoader';
  */
 async function extractLoader(src) {
     debugLog(LOG_TAG, 'main', 'using no cacheable extract loader - filename: ', this.resourcePath);
-    this.cacheable(false);
+    this.cacheable();
     const done = this.async();
     const options = getOptions(this) || {};
     const publicPath = getPublicPath(options, this);
@@ -94,10 +94,14 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
             exports,
             __webpack_public_path__: publicPath, // eslint-disable-line camelcase
             require: givenRelativePath => {
-                const indexOfQuery = Math.max(givenRelativePath.indexOf("?"), givenRelativePath.length);
+                let indexOfQuery = givenRelativePath.indexOf('?');
+                if (indexOfQuery == -1) {
+                    indexOfQuery = givenRelativePath.length;
+                }
+                // Math.max(givenRelativePath.indexOf("?"), givenRelativePath.length);
                 const relativePathWithoutQuery = givenRelativePath.slice(0, indexOfQuery);
                 const indexOfLastExclMark = relativePathWithoutQuery.lastIndexOf("!");
-                const query = givenRelativePath.slice(indexOfQuery);
+                let query = givenRelativePath.slice(indexOfQuery);
                 const loaders = givenRelativePath.slice(0, indexOfLastExclMark + 1);
                 const relativePath = relativePathWithoutQuery.slice(indexOfLastExclMark + 1);
                 const absolutePath = resolve.sync(relativePath, {
@@ -105,9 +109,9 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                 });
                 const ext = path.extname(absolutePath);
 
-                // if (moduleCache.has(absolutePath)) {
-                //     return moduleCache.get(absolutePath);
-                // }
+                if (moduleCache.has(absolutePath)) {
+                    return moduleCache.get(absolutePath);
+                }
 
                 // If the required file is a js file, we just require it with node's require.
                 // If the required file should be processed by a loader we do not touch it (even if it is a .js file).
@@ -118,14 +122,23 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
 
                     const exports = require(absolutePath); // eslint-disable-line import/no-dynamic-require
 
-                    // moduleCache.set(absolutePath, exports);
+                    moduleCache.set(absolutePath, exports);
 
                     return exports;
                 }
+                let t = rndNumber() + rndNumber();
+                let absoluteRequest = loaders + absolutePath;
+                let querySearchParams = new url.URLSearchParams(query);
+                let newSearchParams = {};
+                querySearchParams.forEach((val, key) => {
+                    newSearchParams[key] = val;
+                });
+                Object.assign(newSearchParams, {
+                    t
+                });
                 newDependencies.push({
                     absolutePath,
-                    absoluteRequest: loaders + absolutePath + query+"?t="+rndNumber() + rndNumber(),
-                    relativeRequest: loaders + relativePath + query
+                    absoluteRequest: loaders + absolutePath + '?' + new url.URLSearchParams(newSearchParams).toString()
                 });
 
                 return rndPlaceholder;
@@ -134,7 +147,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
 
         script.runInNewContext(sandbox);
         const extractedDependencyContent = await Promise.all(
-            newDependencies.map(async ({ absolutePath, absoluteRequest, relativeRequest }) => {
+            newDependencies.map(async ({ absolutePath, absoluteRequest }) => {
                 const src = await loadModule(absoluteRequest);
                 // const src = await loadModule(relativeRequest);
                 return evalModule(src, absolutePath);
@@ -145,7 +158,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
             rndPlaceholderPattern,
             () => extractedDependencyContent.shift()
         );
-        // moduleCache.set(filename, extractedContent);
+        moduleCache.set(filename, extractedContent);
 
         return extractedContent;
     }

@@ -6,8 +6,15 @@ const NODE_MODULES_PATH = path.join(path.resolve(__dirname, '../'), 'node_module
 const _ = require('lodash');
 const glob = require('glob');
 const fs = require('fs');
+const del = require('del');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+let smp = new SpeedMeasurePlugin({
+	outputTarget: path.join(__dirname,'measure.log'),
+	outputFormat:'humanVerbose'
+});
+del.sync('./dist/**/*.*');
 // fs.rmdirSync('./dist');
-module.exports = {
+let webpackConfig = {
 	entry: {
 		app: path.join(__dirname, 'src/app.js'),
 	},
@@ -23,12 +30,12 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.(wxss)/,
+				test: /\.(wxss)$/,
 				use: WechatAppPlugin.wrapStyleLoaderConfig([], {
 				})
 			},
 			{
-				test: /\.(wxml)/,
+				test: /\.(wxml)$/,
 				use: WechatAppPlugin.wrapViewLoaderConfig([], {
 				})
 
@@ -40,7 +47,6 @@ module.exports = {
 					{
 						loader: WechatAppPlugin.loaders.assetsLoader,
 						options: {
-							styleExt: ['less'],
 							// limit: 8 * 1024//限制8k以上不能转base64 
 						}
 					}
@@ -125,3 +131,5 @@ module.exports = {
 	],
 	devtool: 'source-map',
 };
+webpackConfig = smp.wrap(webpackConfig);
+module.exports = webpackConfig;
