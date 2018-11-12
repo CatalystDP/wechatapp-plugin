@@ -22,5 +22,5 @@
     margin-top: 200px;
 }
 .bg{
-    /* background-image: url(../../img/webpack-logo.jpeg); */
+    background-image: url(../../img/webpack-logo.jpeg?network=true);
   }

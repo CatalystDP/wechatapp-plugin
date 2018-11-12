@@ -2,6 +2,7 @@
 //获取应用实例
 const app = getApp()
 const testUtil = require('util/test-util');
+require('./img');
 // const util = require('util/util');
 Page({
   data: {

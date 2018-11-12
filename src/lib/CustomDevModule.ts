@@ -1,6 +1,6 @@
 import BaseDevModule from './BaseDevModule';
 import IPluginOptions from '../interfaces/IPluginOptions';
-const path = require('path');
+import path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
 const glob = require('glob');
@@ -50,7 +50,7 @@ class CustomDevModule extends BaseDevModule {
                 })
             }).forEach(e => {
                 let fullPath = path.join(this.getProjectRoot(), e);
-                entry[e.replace(this.pluginOption.ext, '')] = path.join(this.getProjectRoot(), e);
+                entry[e.replace(path.extname(fullPath), '')] = fullPath;
             });
         }
         return entry;

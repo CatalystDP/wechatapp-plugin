@@ -2,7 +2,10 @@ const co = require('co');
 import path = require('path');
 import webpack = require('webpack');
 import IPluginOptions from '../interfaces/IPluginOptions';
+import * as globToRegexp from 'glob-to-regexp';
+import { debugLog } from '../tools/debug';
 const { ConcatSource, RawSource } = require('webpack-sources');
+
 const acorn = require('acorn');
 const glob = require('glob');
 const fs = require('fs-extra');
@@ -11,6 +14,7 @@ const unixfy = require('unixify');
 const chalk = require('chalk');
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
 const assetsName = 'assets';
+const LOG_TAG='BaseDevModule';
 class BaseDevModule {
     protected compiler: any;
     protected pluginOption: IPluginOptions;
@@ -33,7 +37,8 @@ class BaseDevModule {
             //清除掉assets.js相关文件         
             try {
                 Object.keys(compilation.assets).filter(key => {
-                    return key.indexOf(`${assetsName}${this.pluginOption.ext}`) > -1
+                    // return key.indexOf(`${assetsName}${this.pluginOption.ext}`) > -1
+                    return key.indexOf(`${assetsName}.js`) > -1
                 }).forEach(key => {
                     delete compilation.assets[key];
                 });
@@ -72,9 +77,9 @@ class BaseDevModule {
                     let fullPath = path.join(this.getProjectRoot(), c);
                     let pathInfo = path.parse(c);
                     if (pathInfo.dir.indexOf(pathInfo.name) == -1) return;//组件文件的文件名不和目录名字匹配，认为当前文件不是组件，不要加入到entry
-                    let jsonPath = fullPath.replace(this.pluginOption.ext, '.json');
+                    let jsonPath = fullPath.replace(path.extname(fullPath), '.json');
                     if (!fs.existsSync(jsonPath)) return;//没有组件的json文件，认为不是组件
-                    entry[c.replace(this.pluginOption.ext, '')] = path.join(this.getProjectRoot(), c);
+                    entry[c.replace(path.extname(c), '')] = path.join(this.getProjectRoot(), c);
                 });
             }
         });
@@ -134,10 +139,15 @@ class BaseDevModule {
     appendCommonPlugin(name) {
         //提取出common chunk 
         const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
+        let regexp = globToRegexp(`*${this.pluginOption.ext}`, {
+            extended: true,
+            globstar:true
+        });
+        // debugLog(LOG_TAG,'appendCommonPlugin',`regexp = ${regexp }`);
         let minChunks = _.isFunction(this.pluginOption.minChunks) ? this.pluginOption.minChunks : (module, count) => {
-            if (module.resource && path.parse(module.resource).ext == this.pluginOption.ext) {
-                return this.getEntryResource().indexOf(module.resource) == -1;
-            }
+            // if (module.resource && path.parse(module.resource).ext == this.pluginOption.ext) {
+            //     return this.getEntryResource().indexOf(module.resource) == -1;
+            // }
             return count >= 2;
         };
         this.compiler.apply(new CommonsChunkPlugin({
@@ -146,7 +156,7 @@ class BaseDevModule {
         }));
     }
     getCommonRelativePath(commonName, targetFile) {
-        let commonPath = path.join(this.distPath, `${commonName}${this.pluginOption.ext}`);
+        let commonPath = path.join(this.distPath, `${commonName}.js`);
         let relativePath = unixfy(path.relative(path.dirname(targetFile), commonPath));
         return relativePath
     }
@@ -166,7 +176,7 @@ class BaseDevModule {
             let source = core;
             let injectFunction = `
 function webpackJsonp(){
-    require(${JSON.stringify(this.getCommonRelativePath(this.getCommonName(), path.join(this.distPath, `${name}${this.pluginOption.ext}`)))});
+    require(${JSON.stringify(this.getCommonRelativePath(this.getCommonName(), path.join(this.distPath, `${name}.js`)))});
     typeof wx[${jsonpFuncName}] === 'function' && wx[${jsonpFuncName}].apply(wx,arguments);
 }
 `;

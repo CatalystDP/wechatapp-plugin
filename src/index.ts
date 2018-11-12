@@ -15,16 +15,13 @@ class WechatAppPlugin {
     } = <any>{}) {
         return [
             util.fileLoader('wxss'),
-            // {
-            //     loader: 'extract-loader',
-            //     options: Object.assign({}, loaderConfig['extract-loader'] || {})
-            // },
-            // {
-            //     loader: 'css-loader',
-            //     options: {
-            //         import: false
-            //     }
-            // }
+            WechatAppPlugin.loaders.extractLoader,
+            {
+                loader: 'css-loader',
+                options: {
+                    import: false
+                }
+            }
         ].concat(loaders);
     };
     public static wrapViewLoaderConfig = function (loaders = [], loaderConfig: {
@@ -34,10 +31,6 @@ class WechatAppPlugin {
         return [
             WechatAppPlugin.util.fileLoader('wxml'),
             WechatAppPlugin.loaders.extractLoader,
-            // {
-            //     loader: 'extract-loader',
-            //     options: Object.assign({}, loaderConfig['extract-loader'] || {})
-            // },
             {
                 loader: 'html-loader',
                 options: Object.assign({
@@ -61,7 +54,7 @@ class WechatAppPlugin {
      * @constructor 
      * @param {Object} option 
      *    @param {String}[option.devMode=WechatAppPlugin.mode.APP] 开发模式
-     *    @param {String} [option.ext='.js']
+     *    @param {String} [option.ext='.?(js|ts)']
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
      *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
@@ -75,7 +68,7 @@ class WechatAppPlugin {
     constructor(option: IPluginOptions = {}) {
         this.option = _.defaults(option || {}, {
             devMode: WechatAppPlugin.mode.APP,
-            ext: '.js',
+            ext: '.?(js|ts)',
             appCommonName: 'appCommon',
             jsonpFuncName: 'wechatAppJsonp',
             pluginCommonName: 'pluginCommon',

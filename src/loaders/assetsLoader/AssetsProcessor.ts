@@ -12,7 +12,7 @@ interface IAssetsLoaderOptions {
     viewExt: string[];
     scriptExt: string[];
     outputPath: string;
-    publicPath
+    publicPath: (url: string) => string | string;
     limit?: number;
 };
 type TLoaderOptions = loaderUtils.OptionObject & IAssetsLoaderOptions;
@@ -43,7 +43,7 @@ class AssetsProcessor {
             ...defaultExts,
             limit: 4 * 1024,//默认4k大小
             outputPath: 'assets/',
-            publicPath:''
+            publicPath: (url: string) => ''
         })
         if (!this.issuerResource) {
             this.loaderContext.callback(null, this.content, this.sourceMap);
@@ -54,8 +54,9 @@ class AssetsProcessor {
     protected process(): void {
         let issuerResource = this.issuerResource;
         debugLog(LOG_TAG, 'issuerResource', `processing issuer ${issuerResource}`);
-        let resourceQuery = loaderUtils.parseQuery(this.loaderContext.resourceQuery);
-        debugLog(LOG_TAG,'issuerResourceQuery',`issuer ${issuerResource} query object ${JSON.stringify(resourceQuery)}`);
+        let resourceQuery = this.loaderContext.resourceQuery.indexOf('?') > -1 ?
+            loaderUtils.parseQuery(this.loaderContext.resourceQuery) : {};
+        debugLog(LOG_TAG, 'issuerResourceQuery', `issuer ${issuerResource} query object ${JSON.stringify(resourceQuery)}`);
         let isNetworkUrl = !!resourceQuery.network;
         let issuerExt: string = path.extname(issuerResource);
         if (!issuerExt) {
@@ -78,25 +79,25 @@ class AssetsProcessor {
                         )
                     }
                 }
-                let urlLoaderContext = Object.assign(
-                    {},
-                    this.loaderContext,
-                    {
-                        query: {
-                            limit: this.loaderOptions.limit,
-                            ...WechatappPlugin.util.fileLoader().options,
-                            //放入file-loader 的选项
-                            context: issuerResource
-                        }
-                    }
-                );
-                let src = urlLoader.call(urlLoaderContext, this.content);
-                this.loaderContext.callback(
-                    null,
-                    src,
-                    this.sourceMap
-                );
             }
+            let urlLoaderContext = Object.assign(
+                {},
+                this.loaderContext,
+                {
+                    query: {
+                        limit: this.loaderOptions.limit,
+                        ...WechatappPlugin.util.fileLoader().options,
+                        //放入file-loader 的选项
+                        context: issuerResource
+                    }
+                }
+            );
+            let src = urlLoader.call(urlLoaderContext, this.content);
+            this.loaderContext.callback(
+                null,
+                src,
+                this.sourceMap
+            );
         } else {
             //网络图片
             let fileLoaderContext = Object.assign(
@@ -107,11 +108,11 @@ class AssetsProcessor {
                         ...WechatappPlugin.util.fileLoader().options,
                         useRelativePath: false,
                         outputPath: this.loaderOptions.outputPath,
-                        publicPath:this.loaderOptions
+                        publicPath: this.loaderOptions.publicPath
                     }
                 }
             );
-            let src = fileLoader.call(fileLoaderContext,this.content);
+            let src = fileLoader.call(fileLoaderContext, this.content);
             this.loaderContext.callback(
                 null,
                 src,

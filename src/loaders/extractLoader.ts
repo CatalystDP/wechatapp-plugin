@@ -126,7 +126,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
 
                     return exports;
                 }
-                let t = rndNumber() + rndNumber();
+                // let t = rndNumber() + rndNumber();
                 let absoluteRequest = loaders + absolutePath;
                 let querySearchParams = new url.URLSearchParams(query);
                 let newSearchParams = {};
@@ -134,7 +134,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                     newSearchParams[key] = val;
                 });
                 Object.assign(newSearchParams, {
-                    t
+                    t:rndPlaceholder
                 });
                 newDependencies.push({
                     absolutePath,

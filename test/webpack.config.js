@@ -9,8 +9,8 @@ const fs = require('fs');
 const del = require('del');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 let smp = new SpeedMeasurePlugin({
-	outputTarget: path.join(__dirname,'measure.log'),
-	outputFormat:'humanVerbose'
+	outputTarget: path.join(__dirname, 'measure.log'),
+	outputFormat: 'humanVerbose'
 });
 del.sync('./dist/**/*.*');
 // fs.rmdirSync('./dist');
@@ -20,15 +20,28 @@ let webpackConfig = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'dist')
 	},
 	resolve: {
 		alias: {
 			util: path.join(__dirname, 'utils')
-		}
+		},
+		extensions:['.ts','.js']
 	},
 	module: {
 		rules: [
+			{
+				test: /\.ts$/,
+				use: [
+					{
+						loader: 'ts-loader',
+						options: {
+							transpileOnly: true,
+							configFile: path.join(__dirname, 'tsconfig.json')
+						}
+					}
+				],
+			},
 			{
 				test: /\.(wxss)$/,
 				use: WechatAppPlugin.wrapStyleLoaderConfig([], {
@@ -47,6 +60,7 @@ let webpackConfig = {
 					{
 						loader: WechatAppPlugin.loaders.assetsLoader,
 						options: {
+							publicPath: 'https://www.testassets.com/assets'
 							// limit: 8 * 1024//限制8k以上不能转base64 
 						}
 					}
@@ -88,9 +102,9 @@ let webpackConfig = {
 			// 		}
 			// 	];
 			// },
-			minChunks: (module, count) => {
-				return count >= 2;
-			},
+			// minChunks: (module, count) => {
+			// 	return count >= 2;
+			// },
 			// onAdditionalEntry: () => {
 			// 	const externalComponents = [
 			// 		'list/list',

@@ -1,9 +1,9 @@
 import BaseDevModule from './BaseDevModule';
 import IPluginOptions from '../interfaces/IPluginOptions';
-const path = require('path');
+import path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
-const glob = require('glob');
+import glob = require('glob');
 class AppDevModule extends BaseDevModule {
     protected pages: string[];
     protected appJson: {
@@ -32,12 +32,17 @@ class AppDevModule extends BaseDevModule {
         if (!_.isObject(entry)) return;
         if (!entry.app) return;
         this.entryResource = [];
-        if (!/app\.js/.test(entry.app)) return;
+        // if (!/app\.js/.test(entry.app)) return;
+        if(!/app\..+/.test(entry.app)) return;
         this.entryResource.push(entry.app);
         this.projectRoot = path.dirname(entry.app);
         this._resolveAppJson();
         this.pages.forEach(page => {
-            entry[page] = path.join(this.projectRoot, `${page}${this.pluginOption.ext}`)
+            let file = path.join(this.projectRoot, `${page}${this.pluginOption.ext}`);
+            let matched = glob.sync(file);
+            if (Array.isArray(matched) && matched.length > 0) {
+                entry[page] = matched[0];
+            }
         });
         let componentEntry = this.getComponentEntry();
         _.extend(entry, componentEntry);
