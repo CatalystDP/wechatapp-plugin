@@ -23,11 +23,10 @@ export interface IPluginCtorOption {
     onEmitAssets?: (assets: object) => void
     onAdditionalAssets?: () => string[],
     onAdditionalEntry?: () => TadditionalEntry
-};
-class WechatAppPlugin {
+}
+export class WechatAppPlugin {
     public constructor(options: IPluginCtorOption);
 }
-namespace WechatAppPlugin {
+export namespace WechatAppPlugin {
     export function wrapStyleLoaderConfig(loaderConfig: object): object[]
 }
-export = WechatAppPlugin;
