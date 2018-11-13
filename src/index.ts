@@ -54,7 +54,7 @@ class WechatAppPlugin {
      * @constructor 
      * @param {Object} option 
      *    @param {String}[option.devMode=WechatAppPlugin.mode.APP] 开发模式
-     *    @param {String} [option.ext='.?(js|ts)']
+     *    @param {String} [option.ext=['.js','.ts']]
      *    @param {String} [option.jsonpFuncName='wechatAppJsonp']
      *    @param {String} [option.projectRoot] 自定义工程路径，仅自定义模式下有效
      *    @param {String} [option.customFiles] 自定义入口的目录名称 自定义模式下必传
@@ -68,7 +68,7 @@ class WechatAppPlugin {
     constructor(option: IPluginOptions = {}) {
         this.option = _.defaults(option || {}, {
             devMode: WechatAppPlugin.mode.APP,
-            ext: '.?(js|ts)',
+            // ext: '.?(js|ts)',
             appCommonName: 'appCommon',
             jsonpFuncName: 'wechatAppJsonp',
             pluginCommonName: 'pluginCommon',
@@ -81,7 +81,8 @@ class WechatAppPlugin {
         let defaultOpt = {
             componentsPath: ['components'],
             fileLoaderExt: [],
-            assetsExt: ['wxml', 'json', 'wxss']
+            assetsExt: ['wxml', 'json', 'wxss'],
+            ext:['js','ts']
             // picLoaderExt: ['png'],
             // styleLoaderExt: ['wxss']
         };
@@ -93,6 +94,8 @@ class WechatAppPlugin {
             }
             this.option[key] = val;
         });
+        (<any>this.option).originExt = this.option.ext;//记录原始的ext
+        (<any>this.option.ext) = `.?(${this.option.ext.join('|')})`;
         this._route = {};
         _.forIn(moduleRoute, (value, key) => {
             this._route[key] = (compiler) => {

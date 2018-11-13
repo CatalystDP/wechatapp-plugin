@@ -14,7 +14,7 @@ const unixfy = require('unixify');
 const chalk = require('chalk');
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
 const assetsName = 'assets';
-const LOG_TAG='BaseDevModule';
+const LOG_TAG = 'BaseDevModule';
 class BaseDevModule {
     protected compiler: any;
     protected pluginOption: IPluginOptions;
@@ -141,13 +141,20 @@ class BaseDevModule {
         const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
         let regexp = globToRegexp(`*${this.pluginOption.ext}`, {
             extended: true,
-            globstar:true
+            globstar: true
         });
         // debugLog(LOG_TAG,'appendCommonPlugin',`regexp = ${regexp }`);
         let minChunks = _.isFunction(this.pluginOption.minChunks) ? this.pluginOption.minChunks : (module, count) => {
-            // if (module.resource && path.parse(module.resource).ext == this.pluginOption.ext) {
-            //     return this.getEntryResource().indexOf(module.resource) == -1;
-            // }
+            if (module.resource) {
+                let ext = path.extname(module.resource);
+                if(ext){
+                    ext = ext.replace(/^\./,'');
+                    if((<any>this.pluginOption).originExt.indexOf(ext)>-1){
+                        return this.getEntryResource().indexOf(module.resource) == -1;
+                    }
+                }
+                // path.parse(module.resource).ext == this.pluginOption.ext
+            }
             return count >= 2;
         };
         this.compiler.apply(new CommonsChunkPlugin({

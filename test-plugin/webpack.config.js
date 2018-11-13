@@ -30,7 +30,7 @@ module.exports = [
 					onAdditionalEntry: function () {
 						console.log('plugin addional entry');
 						return {
-							'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.js')
+							'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.ts')
 						};
 					},
 					onAdditionalAssets: function () {
@@ -72,7 +72,7 @@ module.exports = [
 				onAdditionalEntry: function () {
 					console.log('plugin addional entry');
 					return {
-						'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.js')
+						'external-components/test-component/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.ts')
 					};
 				},
 				onAdditionalAssets: function () {
@@ -115,11 +115,11 @@ module.exports = [
 				devMode: WechatAppPlugin.mode.CUSTOM,
 				jsonpFuncName: 'customJsonp',
 				projectRoot: path.join(__dirname, 'src/plugin/components'),
-				customFiles: ['list/list.js', 'a/list/list.js'],
+				customFiles: ['list/list', 'a/list/list'],
 				onAdditionalEntry: function () {
 					console.log('custom addional entry');
 					return {
-						'external-components/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.js')
+						'external-components/test-component': path.resolve(__dirname, '../test/src/components/test-component/test-component.ts')
 					};
 				},
 				onAdditionalAssets: function () {

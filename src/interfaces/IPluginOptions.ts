@@ -1,7 +1,7 @@
 import { Source } from 'webpack-sources';
 export default interface IPluginOptions {
     devMode?: string;
-    ext?: string;
+    ext?: string[];
     appCommonName?: string;
     jsonpFuncName?: string;
     pluginCommonName?: string;

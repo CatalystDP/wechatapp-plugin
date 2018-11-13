@@ -1,4 +1,4 @@
-const testUtil = require('util/test-util');
+const testUtil = require('../../../utils/test-util');
 const testLib = require('./test-component-lib');
 const liba = require('../components-libs/liba');
 Component({

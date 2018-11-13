@@ -1,4 +1,5 @@
-const BaseDevModule = require('./BaseDevModule');
+import BaseDevModule from './BaseDevModule';
+import IPluginOptions from '../interfaces/IPluginOptions';
 const path = require('path');
 const _ = require('lodash');
 const fs = require('fs-extra');
@@ -6,8 +7,8 @@ const glob = require('glob');
 const acorn = require('acorn');
 const { ConcatSource } = require('webpack-sources');
 class PluginDevModule extends BaseDevModule {
-    constructor(...args) {
-        super(...args);
+    constructor(compiler, pluginOption: IPluginOptions) {
+        super(compiler, pluginOption);
         this.attachPoint();
     }
     attachPoint() {
