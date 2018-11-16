@@ -27,7 +27,7 @@ class AssetsProcessor {
         let { issuer } = loaderContext._module,
             { resource } = issuer;
         this.issuerResource = resource;
-        this.loaderOptions = <TLoaderOptions>loaderUtils.getOptions(<any>this.loaderContext);
+        this.loaderOptions = <TLoaderOptions>(loaderUtils.getOptions(<any>this.loaderContext) || {});
         let defaultExts = {
             styleExt: ['wxss'],
             viewExt: ['wxml'],
@@ -43,7 +43,7 @@ class AssetsProcessor {
             ...defaultExts,
             limit: 4 * 1024,//默认4k大小
             outputPath: 'assets/',
-            publicPath: (url: string) => ''
+            publicPath: (url: string) => '' + url
         })
         if (!this.issuerResource) {
             this.loaderContext.callback(null, this.content, this.sourceMap);
