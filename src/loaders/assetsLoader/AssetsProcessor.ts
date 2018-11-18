@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import * as urlLoader from 'url-loader';
 import * as fileLoader from 'file-loader';
 import * as path from 'path';
+import * as url from 'url';
 import WechatappPlugin = require('../../index');
 interface IAssetsLoaderOptions {
     styleExt: string[];
@@ -66,6 +67,7 @@ class AssetsProcessor {
         }
         issuerExt = issuerExt.replace(/^\./, '');
         if (!isNetworkUrl) {
+            let noCacheRandom = WechatappPlugin.util.rndNumber() + WechatappPlugin.util.rndNumber();
             if (
                 this.loaderOptions.styleExt.indexOf(issuerExt) > -1 ||
                 this.loaderOptions.viewExt.indexOf(issuerExt) > -1

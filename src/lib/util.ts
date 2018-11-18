@@ -16,5 +16,13 @@ export default {
     },
     getPackageJson() {
         return require('../../package.json');
+    },
+    /**
+ * @returns {string}
+ */
+    rndNumber() {
+        return Math.random()
+            .toString()
+            .slice(2);
     }
 };

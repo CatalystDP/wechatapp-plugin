@@ -53,6 +53,7 @@
     "speed-measure-webpack-plugin": "^1.2.3",
     "to-string-loader": "^1.1.5",
     "ts-loader": "^5.3.0",
+    "typescript": "^3.1.6",
     "unixify": "^1.0.0",
     "url-loader": "^1.1.2",
     "webpack-bundle-analyzer": "^2.13.1",

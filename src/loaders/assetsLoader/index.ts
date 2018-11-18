@@ -24,6 +24,13 @@ let loader = function (
         this.emitError(error);
         throw error;
     }
+    if (!this._module) {
+        return this.callback(
+            null,
+            content,
+            map
+        );
+    }
     new AssetsProcessor(this, content, map);
     return;
 };

@@ -1,6 +1,8 @@
 //app.js
 const testUtil = require('util/test-util');
 const util = require('util/util');
+const img = require('./img/webpack-logo.jpeg?from=app');
+console.log('img in app.js ',img);
 App({
   onLaunch: function () {
     // 展示本地存储能力

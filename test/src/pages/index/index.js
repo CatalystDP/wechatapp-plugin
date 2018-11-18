@@ -3,6 +3,8 @@
 const app = getApp()
 const testUtil = require('util/test-util');
 require('./img');
+const img = require('../../img/webpack-logo.jpeg?from=page/index');
+console.log('img in page/index/index.js ',img);
 // const util = require('util/util');
 Page({
   data: {
