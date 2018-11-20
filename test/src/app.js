@@ -2,6 +2,7 @@
 const testUtil = require('util/test-util');
 const util = require('util/util');
 const img = require('./img/webpack-logo.jpeg?from=app');
+// const img = require('./img/webpack-logo.jpeg');
 console.log('img in app.js ',img);
 App({
   onLaunch: function () {
