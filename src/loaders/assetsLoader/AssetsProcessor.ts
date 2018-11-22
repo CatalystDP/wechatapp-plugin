@@ -14,7 +14,10 @@ interface IAssetsLoaderOptions {
     scriptExt: string[];
     outputPath: string;
     publicPath: (url: string) => string | string;
+    name: string;
     limit?: number;
+    relativeOutputPath?: (url: string, resourcePath: string, issuerResource: string) => string;
+    relativePublicPath?: (url: string, resourcePath: string, issuerResource: string) => string
 };
 type TLoaderOptions = loaderUtils.OptionObject & IAssetsLoaderOptions;
 class AssetsProcessor {
@@ -44,6 +47,7 @@ class AssetsProcessor {
             ...defaultExts,
             limit: 4 * 1024,//默认4k大小
             outputPath: 'assets/',
+            name: '[name].[ext]',
             publicPath: (url: string) => '' + url
         })
         if (!this.issuerResource) {
@@ -67,6 +71,7 @@ class AssetsProcessor {
         }
         issuerExt = issuerExt.replace(/^\./, '');
         if (!isNetworkUrl) {
+            let flag = true;
             let noCacheRandom = WechatappPlugin.util.rndNumber() + WechatappPlugin.util.rndNumber();
             if (
                 this.loaderOptions.styleExt.indexOf(issuerExt) > -1 ||
@@ -74,33 +79,48 @@ class AssetsProcessor {
             ) {
                 //view 和 样式内允许有base64 编码的资源
                 if (this.loaderOptions.styleExt.indexOf(issuerExt) > -1) {
-                    //处理样式为base64超过limit，应该报错
+                    //处理样式为base64超过limit，转成网络url
                     if (this.content.byteLength > this.loaderOptions.limit) {
-                        return this.loaderContext.callback(
-                            new Error(`文件 ${this.loaderContext.resourcePath} 大小超过了限制${this.loaderOptions.limit} bytes`)
-                        )
+                        flag = false;
+                        isNetworkUrl = true;
+                        // return this.loaderContext.callback(
+                        //     new Error(`文件 ${this.loaderContext.resourcePath} 大小超过了限制${this.loaderOptions.limit} bytes`)
+                        // )
                     }
                 }
             }
-            let urlLoaderContext = Object.assign(
-                {},
-                this.loaderContext,
-                {
-                    query: {
-                        limit: this.loaderOptions.limit,
-                        ...WechatappPlugin.util.fileLoader().options,
-                        //放入file-loader 的选项
-                        context: issuerResource
+            if (flag) {
+                let urlLoaderContext = Object.assign(
+                    {},
+                    this.loaderContext,
+                    {
+                        query: {
+                            limit: this.loaderOptions.limit,
+                            ...WechatappPlugin.util.fileLoader().options,
+                            //放入file-loader 的选项
+                            context: issuerResource,
+                            useRelativePath: this.loaderOptions.useRelativePath === undefined ?
+                                WechatappPlugin.util.fileLoader().options.useRelativePath : this.loaderOptions.useRelativePath,
+                            outputPath: typeof this.loaderOptions.relativeOutputPath !== 'function' ? null : (url: string) => {
+                                return this.loaderOptions.relativeOutputPath.
+                                    call(this.loaderContext, url, this.loaderContext.resourcePath, issuerResource);
+                            },
+                            publicPath: typeof this.loaderOptions.relativePublicPath !== 'function' ? null : (url: string) => {
+                                return this.loaderOptions.relativePublicPath.
+                                    call(this.loaderContext, url, this.loaderContext.resourcePath, issuerResource);
+                            }
+                        }
                     }
-                }
-            );
-            let src = urlLoader.call(urlLoaderContext, this.content);
-            this.loaderContext.callback(
-                null,
-                src,
-                this.sourceMap
-            );
-        } else {
+                );
+                let src = urlLoader.call(urlLoaderContext, this.content);
+                this.loaderContext.callback(
+                    null,
+                    src,
+                    this.sourceMap
+                );
+            }
+        }
+        if (isNetworkUrl) {
             //网络图片
             let fileLoaderContext = Object.assign(
                 {},
@@ -109,6 +129,7 @@ class AssetsProcessor {
                     query: {
                         ...WechatappPlugin.util.fileLoader().options,
                         useRelativePath: false,
+                        name: this.loaderOptions.name,
                         outputPath: this.loaderOptions.outputPath,
                         publicPath: this.loaderOptions.publicPath
                     }
