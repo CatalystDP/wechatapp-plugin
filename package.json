@@ -1,6 +1,6 @@
 {
   "name": "wechatapp-plugin",
-  "version": "1.2.0-beta.0",
+  "version": "1.2.0-alpha.0",
   "description": "",
   "main": "./dist/index.js",
   "directories": {
@@ -11,7 +11,8 @@
     "build-debug": "rimraf ./dist && tsc --sourceMap --watch",
     "build": "rimraf ./dist && tsc",
     "test": "cd test && cross-env DEBUG=wechatapp-plugin webpack --display-modules",
-    "test-plugin": "cd test-plugin && webpack --display-modules"
+    "test-plugin": "cd test-plugin && webpack --display-modules",
+    "publish:dev":"npm publish --tag dev"
   },
   "author": "CatalystDP",
   "license": "MIT",
@@ -53,11 +54,11 @@
     "typescript": "^3.1.6",
     "unixify": "^1.0.0",
     "url-loader": "^1.1.2",
-    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-sources": "^1.1.0"
   },
   "types": "./dist/index.d.ts",
   "devDependencies": {
+    "webpack-bundle-analyzer": "^2.13.1",
     "speed-measure-webpack-plugin": "^1.2.3",
     "less-loader": "^4.1.0"
   }
