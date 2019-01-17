@@ -60,8 +60,8 @@ let webpackConfig = {
 					{
 						loader: WechatAppPlugin.loaders.assetsLoader,
 						options: {
-							publicPath: 'https://www.testassets.com/assets'
-							// limit: 8 * 1024//限制8k以上不能转base64 
+							publicPath: 'https://www.testassets.com/assets',
+							limit: 8 * 1024//限制8k以上不能转base64 
 						}
 					}
 				]
