@@ -1,4 +1,4 @@
-import { Source } from 'webpack-sources';
+import { Source } from "webpack-sources";
 export default interface IPluginOptions {
     devMode?: string;
     ext?: string[];
@@ -18,5 +18,5 @@ export default interface IPluginOptions {
     };
     onEmitAssets?: <T extends Source>() => void;
     projectRoot?: string;
-    assetsExt?: string[]
-};
+    assetsExt?: string[];
+}

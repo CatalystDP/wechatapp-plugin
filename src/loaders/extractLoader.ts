@@ -1,11 +1,11 @@
 import * as vm from "vm";
 import * as path from "path";
-import * as url from 'url';
+import * as url from "url";
 import { getOptions } from "loader-utils";
 import * as resolve from "resolve";
 import * as btoa from "btoa";
 import { debugLog } from "../tools/debug";
-const LOG_TAG = 'extractLoader';
+const LOG_TAG = "extractLoader";
 /**
  * @typedef {Object} LoaderContext
  * @property {function} cacheable
@@ -24,26 +24,38 @@ const LOG_TAG = 'extractLoader';
  * @throws Error
  */
 async function extractLoader(src) {
-    debugLog(LOG_TAG, 'main', 'using no cacheable extract loader - filename: ', this.resourcePath);
+    debugLog(
+        LOG_TAG,
+        "main",
+        "using no cacheable extract loader - filename: ",
+        this.resourcePath
+    );
     this.cacheable();
     const done = this.async();
     const options = getOptions(this) || {};
     const publicPath = getPublicPath(options, this);
 
-
     try {
-        done(null, await evalDependencyGraph({
-            loaderContext: this,
-            src,
-            filename: this.resourcePath,
-            publicPath,
-        }));
+        done(
+            null,
+            await evalDependencyGraph({
+                loaderContext: this,
+                src,
+                filename: this.resourcePath,
+                publicPath
+            })
+        );
     } catch (error) {
         done(error);
     }
 }
 
-function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) {
+function evalDependencyGraph({
+    loaderContext,
+    src,
+    filename,
+    publicPath = ""
+}) {
     const moduleCache = new Map();
 
     function loadModule(filename) {
@@ -79,33 +91,44 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
     }
 
     async function evalModule(src, filename) {
-        const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
+        const rndPlaceholder =
+            "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
         const rndPlaceholderPattern = new RegExp(rndPlaceholder, "g");
         const script = new vm.Script(src, {
             filename,
-            displayErrors: true,
+            displayErrors: true
         });
         const newDependencies = [];
         const exports = {};
         const sandbox = Object.assign({}, global, {
             module: {
-                exports,
+                exports
             },
             exports,
             __webpack_public_path__: publicPath, // eslint-disable-line camelcase
             require: givenRelativePath => {
-                let indexOfQuery = givenRelativePath.indexOf('?');
+                let indexOfQuery = givenRelativePath.indexOf("?");
                 if (indexOfQuery == -1) {
                     indexOfQuery = givenRelativePath.length;
                 }
                 // Math.max(givenRelativePath.indexOf("?"), givenRelativePath.length);
-                const relativePathWithoutQuery = givenRelativePath.slice(0, indexOfQuery);
-                const indexOfLastExclMark = relativePathWithoutQuery.lastIndexOf("!");
+                const relativePathWithoutQuery = givenRelativePath.slice(
+                    0,
+                    indexOfQuery
+                );
+                const indexOfLastExclMark = relativePathWithoutQuery.lastIndexOf(
+                    "!"
+                );
                 let query = givenRelativePath.slice(indexOfQuery);
-                const loaders = givenRelativePath.slice(0, indexOfLastExclMark + 1);
-                const relativePath = relativePathWithoutQuery.slice(indexOfLastExclMark + 1);
+                const loaders = givenRelativePath.slice(
+                    0,
+                    indexOfLastExclMark + 1
+                );
+                const relativePath = relativePathWithoutQuery.slice(
+                    indexOfLastExclMark + 1
+                );
                 const absolutePath = resolve.sync(relativePath, {
-                    basedir: path.dirname(filename),
+                    basedir: path.dirname(filename)
                 });
                 const ext = path.extname(absolutePath);
 
@@ -134,15 +157,19 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                     newSearchParams[key] = val;
                 });
                 Object.assign(newSearchParams, {
-                    t:rndPlaceholder
+                    t: rndPlaceholder
                 });
                 newDependencies.push({
                     absolutePath,
-                    absoluteRequest: loaders + absolutePath + '?' + new url.URLSearchParams(newSearchParams).toString()
+                    absoluteRequest:
+                        loaders +
+                        absolutePath +
+                        "?" +
+                        new url.URLSearchParams(newSearchParams).toString()
                 });
 
                 return rndPlaceholder;
-            },
+            }
         });
 
         script.runInNewContext(sandbox);
@@ -190,11 +217,19 @@ function getPublicPath(options, context) {
         return options.publicPath;
     }
 
-    if (context.options && context.options.output && "publicPath" in context.options.output) {
+    if (
+        context.options &&
+        context.options.output &&
+        "publicPath" in context.options.output
+    ) {
         return context.options.output.publicPath;
     }
 
-    if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions) {
+    if (
+        context._compilation &&
+        context._compilation.outputOptions &&
+        "publicPath" in context._compilation.outputOptions
+    ) {
         return context._compilation.outputOptions.publicPath;
     }
 

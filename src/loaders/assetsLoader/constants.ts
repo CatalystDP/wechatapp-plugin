@@ -1,1 +1,1 @@
-export const LOG_TAG = 'assets-loader';
+export const LOG_TAG = "assets-loader";

@@ -1,11 +1,11 @@
-import BaseDevModule from './BaseDevModule';
-import IPluginOptions from '../interfaces/IPluginOptions';
-import path = require('path');
-const _ = require('lodash');
-const fs = require('fs-extra');
-const glob = require('glob');
-const acorn = require('acorn');
-const { ConcatSource } = require('webpack-sources');
+import BaseDevModule from "./BaseDevModule";
+import IPluginOptions from "../interfaces/IPluginOptions";
+import path = require("path");
+const _ = require("lodash");
+const fs = require("fs-extra");
+const glob = require("glob");
+const acorn = require("acorn");
+const { ConcatSource } = require("webpack-sources");
 class CustomDevModule extends BaseDevModule {
     constructor(compiler, pluginOptions: IPluginOptions) {
         super(compiler, pluginOptions);
@@ -13,13 +13,14 @@ class CustomDevModule extends BaseDevModule {
     }
     attachPoint() {
         super.attachPoint();
-        this.compiler.plugin('environment', () => {
+        this.compiler.plugin("environment", () => {
             this.resolveEntry();
             this.appendCommonPlugin(this.getCommonName());
         });
     }
     resolveEntry() {
-        if (!_.isObject(this.compiler.options.entry)) throw new Error('entry must be an Object');
+        if (!_.isObject(this.compiler.options.entry))
+            throw new Error("entry must be an Object");
         let entry = this.compiler.options.entry;
         Object.keys(entry).forEach(key => {
             delete entry[key];
@@ -30,7 +31,7 @@ class CustomDevModule extends BaseDevModule {
         _.extend(entry, customEntry);
         this.addAssetsEntry();
         _.isFunction(this.pluginOption.onAdditionalEntry) &&
-            (_.extend(entry, this.pluginOption.onAdditionalEntry.call(this)));
+            _.extend(entry, this.pluginOption.onAdditionalEntry.call(this));
         _.forIn(entry, val => {
             this.entryResource.push(val);
         });
@@ -44,21 +45,22 @@ class CustomDevModule extends BaseDevModule {
             cwd: this.getProjectRoot()
         });
         if (Array.isArray(customEntrys)) {
-            customEntrys.filter(file => {
-                return this.pluginOption.customFiles.some(f => {
-                    return file.indexOf(f) > -1;
+            customEntrys
+                .filter(file => {
+                    return this.pluginOption.customFiles.some(f => {
+                        return file.indexOf(f) > -1;
+                    });
                 })
-            }).forEach(e => {
-                let fullPath = path.join(this.getProjectRoot(), e);
-                entry[e.replace(path.extname(fullPath), '')] = fullPath;
-            });
+                .forEach(e => {
+                    let fullPath = path.join(this.getProjectRoot(), e);
+                    entry[e.replace(path.extname(fullPath), "")] = fullPath;
+                });
         }
         return entry;
     }
-    *emitAssets(compilation) {
-    }
+    *emitAssets(compilation) {}
     getProjectRoot() {
-        return this.projectRoot || '';
+        return this.projectRoot || "";
     }
     getCommonName() {
         return this.pluginOption.customCommonName;

@@ -1,12 +1,12 @@
-import * as path from 'path';
-import * as querystring from 'querystring';
+import * as path from "path";
+import * as querystring from "querystring";
 export default {
-    fileLoader(ext = '[ext]', asString = false): any {
+    fileLoader(ext = "[ext]", asString = false): any {
         let obj = {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
                 useRelativePath: true,
-                name: `[name].${ext}`,
+                name: `[name].${ext}`
             }
         };
         if (asString) {
@@ -15,11 +15,11 @@ export default {
         return obj;
     },
     getPackageJson() {
-        return require('../../package.json');
+        return require("../../package.json");
     },
     /**
- * @returns {string}
- */
+     * @returns {string}
+     */
     rndNumber() {
         return Math.random()
             .toString()

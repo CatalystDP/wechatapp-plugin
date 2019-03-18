@@ -9,6 +9,7 @@
     "scripts": {
         "prepack": "npm run build",
         "build-debug": "rimraf ./dist && tsc --sourceMap --watch",
+        "prebuild":"prettier --write \"./src/**/*.ts\"",
         "build": "rimraf ./dist && tsc",
         "test": "cd test && cross-env DEBUG=wechatapp-plugin webpack --display-modules",
         "test-plugin": "cd test-plugin && webpack --display-modules",
@@ -61,8 +62,9 @@
     },
     "types": "./dist/index.d.ts",
     "devDependencies": {
-        "webpack-bundle-analyzer": "^2.13.1",
+        "less-loader": "^4.1.0",
+        "prettier": "^1.16.4",
         "speed-measure-webpack-plugin": "^1.2.3",
-        "less-loader": "^4.1.0"
+        "webpack-bundle-analyzer": "^2.13.1"
     }
 }

@@ -18,6 +18,7 @@ let webpackConfig = {
 	entry: {
 		app: path.join(__dirname, 'src/app.js'),
 	},
+	context:path.join(__dirname,'src'),
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist')
@@ -61,7 +62,11 @@ let webpackConfig = {
 						loader: WechatAppPlugin.loaders.assetsLoader,
 						options: {
 							publicPath: 'https://www.testassets.com/assets',
-							limit: 8 * 1024//限制8k以上不能转base64 
+							limit: 4 * 1024,//限制8k以上不能转base64
+							fallback:'file-loader',
+							fallbackOptions:{
+								name:'[path][name].[ext]'
+							}
 						}
 					}
 				]
@@ -77,6 +82,11 @@ let webpackConfig = {
 	plugins: [
 		new WechatAppPlugin({
 			useDefaultLoader: false,
+			onAdditionalAssets:()=>{
+				return [
+					path.join('img/webpack-logo2.jpeg')
+				].map(file=>path.join(__dirname,'src',file));
+			}
 			// fileLoaderExt: ['jpeg'],
 			// picLoaderExt: ['jpeg'],
 			// onStyleLoaders: () => {
@@ -145,5 +155,5 @@ let webpackConfig = {
 	],
 	devtool: 'source-map',
 };
-webpackConfig = smp.wrap(webpackConfig);
+// webpackConfig = smp.wrap(webpackConfig);
 module.exports = webpackConfig;
